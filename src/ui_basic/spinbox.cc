@@ -469,7 +469,7 @@ int32_t SpinBox::get_value() const {
  * overwrites an old replacement if one exists.
  */
 void SpinBox::add_replacement(int32_t value, const std::string& text) {
-	sbi_->value_replacements[value] = text;
+	sbi_->value_replacements.at(value) = text;
 	update();
 }
 

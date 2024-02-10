@@ -203,7 +203,7 @@ struct MultiPlayerPlayerGroup : public UI::Box {
 	             h,
 	             h,
 	             UI::ButtonStyle::kFsMenuSecondary,
-	             playercolor_image(settings_->settings().players[id].color,
+	             playercolor_image(settings_->settings().players.at(id).color,
 	                               "images/players/player_position_menu.png"),
 	             format(_("Player %u"), static_cast<unsigned int>(id_ + 1))),
 	     type_dropdown_(this,
@@ -309,7 +309,7 @@ struct MultiPlayerPlayerGroup : public UI::Box {
 			n->set_player_state(id_, state);
 
 			const GameSettings& settings = settings_->settings();
-			const std::string& tribe = settings.players[id_].tribe;
+			const std::string& tribe = settings.players.at(id_).tribe;
 			if (state == PlayerSettings::State::kComputer &&
 			    (tribe.empty() || !settings.get_tribeinfo(tribe).suited_for_ai)) {
 				for (const Widelands::TribeBasicInfo& t : settings.tribes) {
@@ -330,7 +330,7 @@ struct MultiPlayerPlayerGroup : public UI::Box {
 		if (type_selection_locked_) {
 			return;
 		}
-		const PlayerSettings& player_setting = settings.players[id_];
+		const PlayerSettings& player_setting = settings.players.at(id_);
 		type_dropdown_.clear();
 		// AIs
 		bool can_change_hidden_tribe = !tribes_dropdown_.is_visible() && !settings.savegame;
@@ -393,7 +393,7 @@ struct MultiPlayerPlayerGroup : public UI::Box {
 
 	/// Whether the client who is running the UI is allowed to change the tribe for this player slot.
 	bool has_tribe_access() const {
-		return settings_->settings().players[id_].state == PlayerSettings::State::kShared ?
+		return settings_->settings().players.at(id_).state == PlayerSettings::State::kShared ?
                 settings_->can_change_player_init(id_) :
                 settings_->can_change_player_tribe(id_);
 	}
@@ -426,19 +426,19 @@ struct MultiPlayerPlayerGroup : public UI::Box {
 		if (tribe_selection_locked_) {
 			return;
 		}
-		const PlayerSettings& player_setting = settings.players[id_];
+		const PlayerSettings& player_setting = settings.players.at(id_);
 		tribes_dropdown_.clear();
 		if (player_setting.state == PlayerSettings::State::kShared) {
 			for (size_t i = 0; i < settings.players.size(); ++i) {
 				if (i != id_) {
 					// Do not add players that are also shared_in or closed.
-					const PlayerSettings& other_setting = settings.players[i];
+					const PlayerSettings& other_setting = settings.players.at(i);
 					if (!PlayerSettings::can_be_shared(other_setting.state)) {
 						continue;
 					}
 
 					const Image* player_image = playercolor_image(
-					   settings.players[i].color, "images/players/player_position_menu.png");
+					   settings.players.at(i).color, "images/players/player_position_menu.png");
 					assert(player_image);
 					const std::string player_name =
 					   /** TRANSLATORS: This is an option in multiplayer setup for sharing
@@ -501,7 +501,7 @@ struct MultiPlayerPlayerGroup : public UI::Box {
 		}
 
 		init_dropdown_.clear();
-		const PlayerSettings& player_setting = settings.players[id_];
+		const PlayerSettings& player_setting = settings.players.at(id_);
 		if (settings.scenario) {
 			init_dropdown_.set_label(_("Scenario"));
 			init_dropdown_.set_tooltip(_("Start type is set via the scenario"));

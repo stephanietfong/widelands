@@ -209,22 +209,22 @@ void MapSelect::think() {
 }
 
 bool MapSelect::compare_players(uint32_t rowa, uint32_t rowb) {
-	return maps_data_[table_[rowa]].compare_players(maps_data_[table_[rowb]]);
+	return maps_data_.at(table_[rowa]].compare_players(maps_data_[table_[rowb]));
 }
 
 bool MapSelect::compare_mapnames(uint32_t rowa, uint32_t rowb) {
-	return maps_data_[table_[rowa]].compare_names(maps_data_[table_[rowb]]);
+	return maps_data_.at(table_[rowa]].compare_names(maps_data_[table_[rowb]));
 }
 
 bool MapSelect::compare_size(uint32_t rowa, uint32_t rowb) {
-	return maps_data_[table_[rowa]].compare_size(maps_data_[table_[rowb]]);
+	return maps_data_.at(table_[rowa]].compare_size(maps_data_[table_[rowb]));
 }
 
 MapData const* MapSelect::get_map() const {
 	if (!table_.has_selection()) {
 		return nullptr;
 	}
-	return &maps_data_[table_.get_selected()];
+	return &maps_data_.at(table_.get_selected());
 }
 
 void MapSelect::clicked_back() {
@@ -247,11 +247,11 @@ void MapSelect::clicked_ok() {
 		return;
 	} else if (parent_screen_ != nullptr) {
 		parent_screen_->clicked_select_map_callback(
-		   get_map(), maps_data_[table_.get_selected()].maptype == MapData::MapType::kScenario);
+		   get_map(), maps_data_.at(table_.get_selected()).maptype == MapData::MapType::kScenario);
 		die();
 	} else {
 		new LaunchSPG(get_capsule(), *settings_, std::make_shared<Widelands::Game>(), get_map(),
-		              maps_data_[table_.get_selected()].maptype == MapData::MapType::kScenario);
+		              maps_data_.at(table_.get_selected()).maptype == MapData::MapType::kScenario);
 	}
 }
 

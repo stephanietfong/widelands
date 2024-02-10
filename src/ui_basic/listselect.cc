@@ -198,16 +198,16 @@ void BaseListselect::sort(const uint32_t Begin, uint32_t End) {
 	}
 	for (uint32_t i = Begin; i < End; ++i) {
 		for (uint32_t j = i + 1; j < End; ++j) {
-			EntryRecord* const eri = entry_records_[i];
-			EntryRecord* const erj = entry_records_[j];
+			EntryRecord* const eri = entry_records_.at(i);
+			EntryRecord* const erj = entry_records_.at(j_;
 			if (strcmp(eri->name.c_str(), erj->name.c_str()) > 0) {
 				if (selection_ == i) {
 					selection_ = j;
 				} else if (selection_ == j) {
 					selection_ = i;
 				}
-				entry_records_[i] = erj;
-				entry_records_[j] = eri;
+				entry_records_.at(i_ = erj;
+				entry_records_.at(j) = eri;
 			}
 		}
 	}
@@ -236,9 +236,9 @@ void BaseListselect::select(const uint32_t i) {
 
 	if (selection_mode_ == ListselectLayout::kShowCheck) {
 		if (selection_ != no_selection_index()) {
-			entry_records_[selection_]->pic = nullptr;
+			entry_records_.at(selection_)->pic = nullptr;
 		}
-		entry_records_[i]->pic = check_pic_;
+		entry_records_.at(i)->pic = check_pic_;
 	}
 	selection_ = i;
 	scroll_to_selection();
@@ -665,7 +665,7 @@ void BaseListselect::scroll_to_selection() {
 void BaseListselect::remove(const uint32_t i) {
 	assert(i < entry_records_.size());
 
-	delete (entry_records_[i]);
+	delete (entry_records_.at(i));
 	entry_records_.erase(entry_records_.begin() + i);
 	if (selection_ == i) {
 		selected(selection_ = no_selection_index());
@@ -681,7 +681,7 @@ void BaseListselect::remove(const uint32_t i) {
  */
 void BaseListselect::remove(const char* const str) {
 	for (uint32_t i = 0; i < entry_records_.size(); ++i) {
-		if (strcmp(entry_records_[i]->name.c_str(), str) == 0) {
+		if (strcmp(entry_records_.at(i)->name.c_str(), str) == 0) {
 			remove(i);
 			return;
 		}

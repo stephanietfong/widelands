@@ -168,16 +168,16 @@ public:
 
 	void update_selection() {
 		for (uint32_t c = 0; c < capacity_; ++c) {
-			if (dropdowns_[c]->is_expanded()) {
+			if (dropdowns_.at(c)->is_expanded()) {
 				continue;
 			}
 			const InputQueue* iq = portdock_.expedition_bootstrap()->inputqueue(c);
 			if (iq == nullptr) {
-				dropdowns_[c]->select(kEmptySlot);
+				dropdowns_.at(c_->select(kEmptySlot);
 			} else {
-				dropdowns_[c]->select(std::make_pair(iq->get_type(), iq->get_index()));
+				dropdowns_.at(c)->select(std::make_pair(iq->get_type(), iq->get_index()));
 			}
-			assert(dropdowns_[c]->has_selection());
+			assert(dropdowns_.at(c)->has_selection());
 		}
 	}
 

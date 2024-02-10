@@ -242,7 +242,7 @@ void SoldierPanel::think() {
 
 	// First pass: check whether existing icons are still valid, and compact them
 	for (uint32_t idx = 0; idx < icons_.size(); ++idx) {
-		Icon& icon = icons_[idx];
+		Icon& icon = icons_.at(idx);
 		Widelands::Soldier* soldier = icon.soldier.get(egbase());
 		if (soldier != nullptr) {
 			std::vector<Widelands::Soldier*>::iterator it =
@@ -261,12 +261,12 @@ void SoldierPanel::think() {
 			continue;
 		}
 
-		while ((icon.row != 0u) && (row_occupancy[icon.row] >= kMaxColumns ||
-		                            icon.row * kMaxColumns + row_occupancy[icon.row] >= capacity)) {
+		while ((icon.row != 0u) && (row_occupancy.at(icon.row) >= kMaxColumns ||
+		                            icon.row * kMaxColumns + row_occupancy.at(icon.row) >= capacity)) {
 			icon.row--;
 		}
 
-		icon.col = row_occupancy[icon.row]++;
+		icon.col = row_occupancy.at(icon.row)++;
 	}
 
 	// Second pass: add new soldiers
@@ -275,10 +275,10 @@ void SoldierPanel::think() {
 		icon.soldier = soldierlist.back();
 		soldierlist.pop_back();
 		icon.row = 0;
-		while (row_occupancy[icon.row] >= kMaxColumns) {
+		while (row_occupancy.at(icon.row) >= kMaxColumns) {
 			icon.row++;
 		}
-		icon.col = row_occupancy[icon.row]++;
+		icon.col = row_occupancy.at(icon.row)++;
 		icon.pos = calc_pos(icon.row, icon.col);
 
 		// Let soldiers slide in from the right border

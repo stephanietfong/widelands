@@ -301,7 +301,7 @@ void BaseTable::draw(RenderTarget& dst) {
 
 		Columns::size_type const nr_columns = columns_.size();
 		for (uint32_t i = 0, curx = 0; i < nr_columns; ++i) {
-			const Column& column = columns_[i];
+			const Column& column = columns_.at(i);
 			const int curw = column.width;
 			Align alignment = mirror_alignment(column.alignment, g_fh->fontset()->is_rtl());
 
@@ -404,10 +404,10 @@ bool BaseTable::handle_tooltip() {
 
 	Vector2i cursor_pos = get_mouse_position();
 	for (uint32_t row = idx; row < entry_records_.size(); ++row) {
-		const EntryRecord& er = *entry_records_[row];
+		const EntryRecord& er = *entry_records_.at(row);
 		for (uint32_t c = 0, column_x = 0; c < columns_.size(); ++c) {
 
-			const int column_w = columns_[c].width;
+			const int column_w = columns_.at(c).width;
 			Vector2i point(column_x, y);
 			if (is_mouse_in(cursor_pos, point, column_w)) {
 				const std::string entry_string = richtext_escape(er.get_string(c));
@@ -723,7 +723,7 @@ void BaseTable::remove(const uint32_t i) {
  */
 void BaseTable::remove_entry(const void* const entry) {
 	for (uint32_t i = 0; i < entry_records_.size(); ++i) {
-		if (entry_records_[i]->entry() == entry) {
+		if (entry_records_.at(i)->entry() == entry) {
 			remove(i);
 			return;
 		}
@@ -732,9 +732,9 @@ void BaseTable::remove_entry(const void* const entry) {
 
 bool BaseTable::sort_helper(uint32_t a, uint32_t b) {
 	if (sort_descending_) {
-		return columns_[sort_column_].compare(b, a);
+		return columns_.at(sort_column_).compare(b, a);
 	}
-	return columns_[sort_column_].compare(a, b);
+	return columns_.at(sort_column_).compare(a, b);
 }
 
 void BaseTable::layout() {
@@ -766,9 +766,9 @@ size_t BaseTable::find_resizable_column_idx() {
 		return flexible_column_idx_;
 	}  // Use the widest column
 	size_t widest_column_idx = 0;
-	uint32_t widest_width = columns_[0].width;
+	uint32_t widest_width = columns_.at(0).width;
 	for (size_t i = 1; i < columns_.size(); ++i) {
-		const uint32_t width = columns_[i].width;
+		const uint32_t width = columns_.at(i).width;
 		if (width > widest_width) {
 			widest_width = width;
 			widest_column_idx = i;
@@ -839,7 +839,7 @@ void BaseTable::sort(const uint32_t lower_bound, uint32_t upper_bound) {
 	copy.reserve(upper_bound - lower_bound);
 	for (uint32_t i = lower_bound; i < upper_bound; ++i) {
 		indices.push_back(i);
-		copy.push_back(entry_records_[i]);
+		copy.push_back(entry_records_.at(i_);
 	}
 
 	std::stable_sort(
@@ -848,8 +848,8 @@ void BaseTable::sort(const uint32_t lower_bound, uint32_t upper_bound) {
 	uint32_t newselection = selection_;
 	std::set<uint32_t> new_multiselect;
 	for (uint32_t i = lower_bound; i < upper_bound; ++i) {
-		uint32_t from = indices[i - lower_bound];
-		entry_records_[i] = copy[from - lower_bound];
+		uint32_t from = indices.at(i - lower_bound_;
+		entry_records_.at(i) = copy[from - lower_bound];
 		if (selection_ == from) {
 			newselection = i;
 		}

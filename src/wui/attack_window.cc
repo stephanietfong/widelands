@@ -719,7 +719,7 @@ void AttackPanel::ListOfSoldiers::draw(RenderTarget& dst) {
 	int32_t row = 0;
 	for (uint32_t i = 0; i < nr_soldiers; ++i) {
 		MutexLock m(MutexLock::ID::kObjects);
-		const Widelands::Bob* bob = soldiers_[i].get(attack_box_->iplayer_.egbase());
+		const Widelands::Bob* bob = soldiers_.at(i).get(attack_box_->iplayer_.egbase());
 		if (bob != nullptr) {
 			Vector2i location(column * attack_box_->icon_w_, row * attack_box_->icon_h_);
 

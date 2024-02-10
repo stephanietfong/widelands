@@ -56,7 +56,7 @@ void find_selected_locale(std::string* selected_locale, const std::string& curre
 	if (selected_locale->empty()) {
 		std::vector<std::string> parts;
 		split(parts, current_locale, {'.'});
-		if (current_locale == parts[0]) {
+		if (current_locale == parts.at(0) {
 			*selected_locale = current_locale;
 		} else {
 			split(parts, parts[0], {'@'});
@@ -736,7 +736,7 @@ void Options::update_language_stats() {
 		if (locale.empty()) {
 			std::vector<std::string> parts;
 			split(parts, i18n::get_locale(), {'.'});  // split of encoding
-			if (language_entries_.count(parts[0]) == 1) {
+			if (language_entries_.count(parts.at(0) == 1) {
 				locale = parts[0];
 			} else {
 				std::vector<std::string> parts2;
