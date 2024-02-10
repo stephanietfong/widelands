@@ -226,7 +226,7 @@ MutexLock::MutexLock(const ID i) : id_(i) {
 
 	const std::thread::id self = std::this_thread::get_id();
 	s_mutex_.lock();
-	MutexRecord& record = g_all_mutex_records[id_];
+	MutexRecord& record = g_all_mutex_records.at(id_);
 
 	if (record.current_owner != kNoThread) {
 		for (const auto& pair : acting_as_another_thread) {

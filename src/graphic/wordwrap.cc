@@ -296,7 +296,7 @@ uint32_t WordWrap::offset_of_line_at(int32_t y) const {
 std::string WordWrap::text_of_line_at(int32_t y) const {
 	size_t line_idx = line_index(y);
 	line_idx = std::min(line_idx, lines_.size() - 1);
-	return lines_[line_idx].text;
+	return lines_.at(line_idx).text;
 }
 
 int WordWrap::text_width_of(std::string& text) const {
@@ -309,7 +309,7 @@ int WordWrap::text_width_of(std::string& text) const {
  */
 void WordWrap::calc_wrapped_pos(uint32_t caret, uint32_t& line, uint32_t& pos) const {
 	assert(!lines_.empty());
-	assert(lines_[0].start == 0);
+	assert(lines_.at(0).start == 0);
 
 	uint32_t min = 0;
 	uint32_t max = lines_.size() - 1;
@@ -317,24 +317,24 @@ void WordWrap::calc_wrapped_pos(uint32_t caret, uint32_t& line, uint32_t& pos) c
 	while (max > min) {
 		uint32_t mid = min + (max - min + 1) / 2;
 
-		if (caret >= lines_[mid].start) {
+		if (caret >= lines_.at(mid).start) {
 			min = mid;
 		} else {
 			max = mid - 1;
 		}
 	}
 
-	assert(caret >= lines_[min].start);
+	assert(caret >= lines_.at(min).start);
 
 	line = min;
-	pos = caret - lines_[min].start;
+	pos = caret - lines_.at(min).start;
 }
 
 /**
  * Return the starting offset of line number @p line in the original text.
  */
 uint32_t WordWrap::line_offset(uint32_t line) const {
-	return lines_[line].start;
+	return lines_.at(line).start;
 }
 
 uint32_t WordWrap::lineheight() const {
@@ -386,7 +386,7 @@ void WordWrap::draw(RenderTarget& dst,
 		}
 
 		std::shared_ptr<const UI::RenderedText> rendered_text = UI::g_fh->render(
-		   as_editorfont(lines_[line].text, fontsize_ - UI::g_fh->fontset()->size_offset(), color_));
+		   as_editorfont(lines_.at(line).text, fontsize_ - UI::g_fh->fontset()->size_offset(), color_));
 
 		UI::correct_for_align(alignment, rendered_text->width(), &point);
 
@@ -443,24 +443,24 @@ void WordWrap::highlight_selection(RenderTarget& dst,
 	Vector2i highlight_end = Vector2i::zero();
 
 	if (line == selection_start_line) {
-		std::string text_before_selection = lines_[line].text.substr(0, selection_start_x);
+		std::string text_before_selection = lines_.at(line).text.substr(0, selection_start_x);
 		highlight_start.x += text_width(text_before_selection, fontsize_);
 
 		if (line == selection_end_line) {
 			size_t nr_characters = selection_end_x - selection_start_x;
-			std::string selected_text = lines_[line].text.substr(selection_start_x, nr_characters);
+			std::string selected_text = lines_.at(line).text.substr(selection_start_x, nr_characters);
 			highlight_end = Vector2i(text_width(selected_text, fontsize_), fontheight);
 		} else {
-			std::string selected_text = lines_[line].text.substr(selection_start_x);
+			std::string selected_text = lines_.at(line).text.substr(selection_start_x);
 			highlight_end = Vector2i(text_width(selected_text, fontsize_), fontheight);
 		}
 
 	} else if (line > selection_start_line && line < selection_end_line) {
-		highlight_end = Vector2i(text_width(lines_[line].text, fontsize_), fontheight);
+		highlight_end = Vector2i(text_width(lines_.at(line).text, fontsize_), fontheight);
 
 	} else if (line == selection_end_line) {
 		highlight_end =
-		   Vector2i(text_width(lines_[line].text.substr(0, selection_end_x), fontsize_), fontheight);
+		   Vector2i(text_width(lines_.at(line).text.substr(0, selection_end_x), fontsize_), fontheight);
 	}
 
 	if (highlight_end.x <= 0) {

@@ -524,8 +524,8 @@ void PortDock::Loader::load(FileRead& fr, uint8_t /* packet_version */) {
 
 	pd.dockpoints_.resize(nrdockpoints);
 	for (uint16_t i = 0; i < nrdockpoints; ++i) {
-		pd.dockpoints_[i] = read_coords_32(&fr, egbase().map().extent());
-		pd.set_position(egbase(), pd.dockpoints_[i]);
+		pd.dockpoints_.at(i) = read_coords_32(&fr, egbase().map().extent());
+		pd.set_position(egbase(), pd.dockpoints_.at(i));
 	}
 
 	waiting_.resize(fr.unsigned_32());

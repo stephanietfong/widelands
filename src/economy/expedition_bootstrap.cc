@@ -92,15 +92,15 @@ void ExpeditionBootstrap::start() {
 	for (size_t i = 0; i < buildcost_size; ++i, ++it) {
 		WaresQueue* wq = new WaresQueue(*warehouse, it->first, it->second);
 		wq->set_callback(input_callback, this);
-		queues_[i].first.reset(wq);
-		queues_[i].second = false;
+		queues_.at(i).first.reset(wq);
+		queues_at(i).second = false;
 	}
 
 	// Issue the request for the workers (so far only a builder).
-	queues_[buildcost_size].first.reset(
+	queues_.at(buildcost_size).first.reset(
 	   new WorkersQueue(*warehouse, warehouse->owner().tribe().builder(), 1));
-	queues_[buildcost_size].first->set_callback(input_callback, this);
-	queues_[buildcost_size].second = false;
+	queues_.at(buildcost_size).first->set_callback(input_callback, this);
+	queues_.at(buildcost_size).second = false;
 
 	// Update the user interface
 	Notifications::publish(NoteBuilding(warehouse->serial(), NoteBuilding::Action::kChanged));

@@ -52,7 +52,7 @@ CmdQueue::~CmdQueue() {
 void CmdQueue::flush() {
 	uint32_t cbucket = 0;
 	while ((ncmds_ != 0u) && cbucket < kCommandQueueBucketSize) {
-		std::priority_queue<CmdItem>& current_cmds = cmds_[cbucket];
+		std::priority_queue<CmdItem>& current_cmds = cmds_.at(cbucket);
 
 		while (!current_cmds.empty()) {
 			Command* cmd = current_cmds.top().cmd;
@@ -99,7 +99,7 @@ void CmdQueue::run_queue(const Duration& interval, Time& game_time_var) {
 
 	while (game_time_var < final_time) {
 		std::priority_queue<CmdItem>& current_cmds =
-		   cmds_[game_time_var.get() % kCommandQueueBucketSize];
+		   cmds_.at(game_time_var.get() % kCommandQueueBucketSize);
 
 		while (!current_cmds.empty()) {
 			Command& c = *current_cmds.top().cmd;

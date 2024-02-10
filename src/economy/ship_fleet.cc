@@ -321,7 +321,7 @@ ShipFleet::PortPath& ShipFleet::portpath(uint32_t i, uint32_t j) {
 	assert(i < j);
 	assert(j < ports_.size());
 	// This creates a default-constructed portpath if it did not yet exist.
-	return port_paths_[std::make_pair(ports_[i]->serial(), ports_[j]->serial())];
+	return port_paths_.at(std::make_pair(ports_[i]->serial(), ports_[j]->serial()));
 }
 
 const ShipFleet::PortPath& ShipFleet::portpath(uint32_t i, uint32_t j) const {
@@ -412,7 +412,7 @@ void ShipFleet::add_neighbours(PortDock& pd, std::vector<RoutingNodeNeighbour>& 
 		if (pp.cost >= 0) {
 			// TODO(unknown): keep statistics on average transport time instead of using the arbitrary
 			// 2x factor
-			RoutingNodeNeighbour neighb(&ports_[otheridx]->base_flag(), 2 * pp.cost);
+			RoutingNodeNeighbour neighb(&ports_.at(otheridx)->base_flag(), 2 * pp.cost);
 			neighbours.push_back(neighb);
 		}
 	}

@@ -139,7 +139,7 @@ size_t gather_addon_content(const std::string& current_dir,
 			str += FileSystem::fs_filename(f.c_str());
 			nr_files += gather_addon_content(f, str, result);
 		} else {
-			result[prefix].insert(FileSystem::fs_filename(f.c_str()));
+			result.[prefix].insert(FileSystem::fs_filename(f.c_str()));
 			++nr_files;
 		}
 	}

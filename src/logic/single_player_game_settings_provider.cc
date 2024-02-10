@@ -97,7 +97,7 @@ void SinglePlayerGameSettingsProvider::set_map(const std::string& mapname,
 
 	set_player_number(0);
 	for (uint32_t player_nr = 0; player_nr < maxplayers; ++player_nr) {
-		PlayerSettings& player = s.players[player_nr];
+		PlayerSettings& player = s.players.at(player_nr);
 		player.state =
 		   (player_nr == 0) ? PlayerSettings::State::kHuman : PlayerSettings::State::kComputer;
 		player.tribe = s.tribes.at(0).name;
@@ -105,7 +105,7 @@ void SinglePlayerGameSettingsProvider::set_map(const std::string& mapname,
 		player.initialization_index = 0;
 		player.name = format(_("Player %u"), (player_nr + 1));
 		player.team = 0;
-		player.color = kPlayerColors[player_nr];
+		player.color = kPlayerColors.at(player_nr);
 		// Set default computerplayer ai type
 		if (player.state == PlayerSettings::State::kComputer) {
 			const AI::ComputerPlayer::ImplementationVector& impls =
@@ -132,15 +132,15 @@ void SinglePlayerGameSettingsProvider::set_player_state(uint8_t const number,
 		state = PlayerSettings::State::kComputer;
 	}
 
-	s.players[number].state = state;
+	s.players.at(number).state = state;
 }
 
 void SinglePlayerGameSettingsProvider::set_player_ai(uint8_t const number,
                                                      const std::string& ai,
                                                      bool const random_ai) {
 	if (number < s.players.size()) {
-		s.players[number].ai = ai;
-		s.players[number].random_ai = random_ai;
+		s.players.at(number).ai = ai;
+		s.players.at(number).random_ai = random_ai;
 	}
 }
 
@@ -155,25 +155,25 @@ void SinglePlayerGameSettingsProvider::next_player_state(uint8_t const number) {
 		AI::ComputerPlayer::ImplementationVector::const_iterator it = impls.begin();
 		do {
 			++it;
-			if ((*(it - 1))->name == s.players[number].ai) {
+			if ((*(it - 1))->name == s.players.at(number).ai) {
 				break;
 			}
 		} while (it != impls.end());
-		if (s.players[number].random_ai) {
-			s.players[number].random_ai = false;
+		if (s.players.at(number).random_ai) {
+			s.players.at(number).random_ai = false;
 			it = impls.begin();
 		} else if (it == impls.end()) {
-			s.players[number].random_ai = true;
+			s.players.at(number).random_ai = true;
 			do {
 				// Choose a random AI
 				uint8_t random = RNG::static_rand(impls.size());
 				it = impls.begin() + random;
 			} while ((*it)->type == AI::ComputerPlayer::Implementation::Type::kEmpty);
 		}
-		s.players[number].ai = (*it)->name;
+		s.players.at(number).ai = (*it)->name;
 	}
 
-	s.players[number].state = PlayerSettings::State::kComputer;
+	s.players.at(number).state = PlayerSettings::State::kComputer;
 }
 
 void SinglePlayerGameSettingsProvider::set_player_tribe(uint8_t const number,
@@ -184,7 +184,7 @@ void SinglePlayerGameSettingsProvider::set_player_tribe(uint8_t const number,
 	}
 
 	std::string actual_tribe = tribe;
-	PlayerSettings& player = s.players[number];
+	PlayerSettings& player = s.players.at(number);
 	player.random_tribe = random_tribe;
 
 	while (random_tribe) {
@@ -199,7 +199,7 @@ void SinglePlayerGameSettingsProvider::set_player_tribe(uint8_t const number,
 
 	for (const Widelands::TribeBasicInfo& tmp_tribe : s.tribes) {
 		if (tmp_tribe.name == player.tribe) {
-			s.players[number].tribe = actual_tribe;
+			s.players.at(number).tribe = actual_tribe;
 			if (tmp_tribe.initializations.size() <= player.initialization_index) {
 				player.initialization_index = 0;
 			}
@@ -213,9 +213,9 @@ void SinglePlayerGameSettingsProvider::set_player_init(uint8_t const number, uin
 	}
 
 	for (const Widelands::TribeBasicInfo& tmp_tribe : s.tribes) {
-		if (tmp_tribe.name == s.players[number].tribe) {
+		if (tmp_tribe.name == s.players.at(number).tribe) {
 			if (index < tmp_tribe.initializations.size()) {
-				s.players[number].initialization_index = index;
+				s.players.(number).initialization_index = index;
 			}
 			return;
 		}
@@ -225,13 +225,13 @@ void SinglePlayerGameSettingsProvider::set_player_init(uint8_t const number, uin
 
 void SinglePlayerGameSettingsProvider::set_player_team(uint8_t number, Widelands::TeamNumber team) {
 	if (number < s.players.size()) {
-		s.players[number].team = team;
+		s.players.at(number).team = team;
 	}
 }
 
 void SinglePlayerGameSettingsProvider::set_player_color(const uint8_t number, const RGBColor& c) {
 	if (number < s.players.size()) {
-		s.players[number].color = c;
+		s.players.at(number).color = c;
 	}
 }
 
@@ -248,13 +248,13 @@ void SinglePlayerGameSettingsProvider::set_player_shared(PlayerSlot /*number*/,
 void SinglePlayerGameSettingsProvider::set_player_name(uint8_t const number,
                                                        const std::string& name) {
 	if (number < s.players.size()) {
-		s.players[number].name = name;
+		s.players.at(number).name = name;
 	}
 }
 
 void SinglePlayerGameSettingsProvider::set_player(uint8_t const number, const PlayerSettings& ps) {
 	if (number < s.players.size()) {
-		s.players[number] = ps;
+		s.players.at(number) = ps;
 	}
 }
 
@@ -272,8 +272,8 @@ void SinglePlayerGameSettingsProvider::set_player_number(uint8_t const number) {
 	                                           position.state == PlayerSettings::State::kComputer)) {
 
 		// swap player but keep player name and, if unchanged from the default, colour
-		bool new_uses_default_colour = s.players[old_number].color == kPlayerColors[old_number];
-		bool old_uses_default_colour = s.players[number].color == kPlayerColors[number];
+		bool new_uses_default_colour = s.players.at(old_number).color == kPlayerColors.at(old_number);
+		bool old_uses_default_colour = s.players.at(number).color == kPlayerColors.at(number);
 		set_player(number, player);
 		set_player_name(number, position.name);
 

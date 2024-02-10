@@ -56,7 +56,7 @@ void AiDnaHandler::fetch_dna(std::vector<int16_t>& military_numbers,
 			throw wexception(
 			   "Out of range AI data in magic_numbers section: %d\n", static_cast<int>(i));
 		}
-		military_numbers[i] = static_cast<int16_t>(value);
+		military_numbers.at(i) = static_cast<int16_t>(value);
 	}
 
 	Section& nv = prof.get_safe_section("neuron_values");
@@ -66,7 +66,7 @@ void AiDnaHandler::fetch_dna(std::vector<int16_t>& military_numbers,
 			throw wexception(
 			   "Out of range AI data in neuron_values section: %d\n", static_cast<int>(i));
 		}
-		input_weights[i] = static_cast<int8_t>(value);
+		input_weights.at(i) = static_cast<int8_t>(value);
 	}
 
 	Section& nf = prof.get_safe_section("neuron_functions");
@@ -76,12 +76,12 @@ void AiDnaHandler::fetch_dna(std::vector<int16_t>& military_numbers,
 			throw wexception(
 			   "Out of range  AI data in neuron_functions section: %d\n", static_cast<int>(i));
 		}
-		input_func[i] = static_cast<int8_t>(value);
+		input_func.at(i) = static_cast<int8_t>(value);
 	}
 
 	Section& fn = prof.get_safe_section("fneurons");
 	for (size_t i = 0; i < f_neurons.size(); i++) {
-		f_neurons[i] = fn.get_natural(std::to_string(static_cast<int32_t>(i)).c_str());
+		f_neurons.at(i) = fn.get_natural(std::to_string(static_cast<int32_t>(i)).c_str());
 	}
 }
 

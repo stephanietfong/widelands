@@ -64,7 +64,7 @@ ParticipantList::ParticipantType ParticipantList::get_participant_type(int16_t p
 Widelands::TeamNumber ParticipantList::get_participant_team(int16_t participant) const {
 	const size_t index = participant_to_playerindex(participant);
 	assert(index <= settings_->players.size());
-	return settings_->players[index].team;
+	return settings_->players.at(index).team;
 }
 
 const std::string& ParticipantList::get_participant_name(int16_t participant) const {
@@ -74,7 +74,7 @@ const std::string& ParticipantList::get_participant_name(int16_t participant) co
 		return participant_to_user(participant).name;
 	}
 	// It is an AI player. Get its type and resolve it to a pretty name
-	const PlayerSettings& ps = settings_->players[participant_to_playerindex(participant)];
+	const PlayerSettings& ps = settings_->players.at(participant_to_playerindex(participant));
 	assert(ps.state == PlayerSettings::State::kComputer);
 	return AI::ComputerPlayer::get_implementation(ps.ai)->descname;
 }
@@ -233,7 +233,7 @@ int32_t ParticipantList::participant_to_playerindex(int16_t participant) const {
 		assert(participant >= 0);
 		assert(static_cast<size_t>(participant) < settings_->players.size());
 		for (size_t i = 0; i < settings_->players.size(); ++i) {
-			const PlayerSettings& player = settings_->players[i];
+			const PlayerSettings& player = settings_->players.at(i);
 			if (player.state != PlayerSettings::State::kComputer) {
 				// Ignore open, shared or human player slots
 				continue;

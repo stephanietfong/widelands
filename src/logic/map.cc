@@ -270,9 +270,9 @@ void Map::recalc_default_resources(const Descriptions& descriptions) {
 				const ResourceAmount default_amount = terr->get_default_resource_amount();
 				if (((terr->get_is() & TerrainDescription::Is::kUnwalkable) != 0) &&
 				    default_amount > 0) {
-					m[resr] += 3;
+					m.at(resr) += 3;
 				} else {
-					++m[resr];
+					++m.at(resr);
 				}
 				amount += default_amount;
 			}
@@ -282,9 +282,9 @@ void Map::recalc_default_resources(const Descriptions& descriptions) {
 				const ResourceAmount default_amount = terd->get_default_resource_amount();
 				if (((terd->get_is() & TerrainDescription::Is::kUnwalkable) != 0) &&
 				    default_amount > 0) {
-					m[resd] += 3;
+					m.at(resd) += 3;
 				} else {
-					++m[resd];
+					++m.at(resd);
 				}
 				amount += default_amount;
 			}
@@ -297,9 +297,9 @@ void Map::recalc_default_resources(const Descriptions& descriptions) {
 				const ResourceAmount default_amount = terd->get_default_resource_amount();
 				if (((terd->get_is() & TerrainDescription::Is::kUnwalkable) != 0) &&
 				    default_amount > 0) {
-					m[resd] += 3;
+					m.at(resd) += 3;
 				} else {
-					++m[resd];
+					++m.at(resd);
 				}
 				amount += default_amount;
 			}
@@ -312,9 +312,9 @@ void Map::recalc_default_resources(const Descriptions& descriptions) {
 				const ResourceAmount default_amount = terr->get_default_resource_amount();
 				if (((terr->get_is() & TerrainDescription::Is::kUnwalkable) != 0) &&
 				    default_amount > 0) {
-					m[resr] += 3;
+					m.at(resr) += 3;
 				} else {
-					++m[resr];
+					++m.at(resr);
 				}
 				amount += default_amount;
 			}
@@ -876,28 +876,28 @@ const std::string& Map::get_scenario_player_tribe(const PlayerNumber p) const {
 	assert(scenario_tribes_.size() == get_nrplayers());
 	assert(p);
 	assert(p <= get_nrplayers());
-	return scenario_tribes_[p - 1];
+	return scenario_tribes_.at(p - 1);
 }
 
 const std::string& Map::get_scenario_player_name(const PlayerNumber p) const {
 	assert(scenario_names_.size() == get_nrplayers());
 	assert(p);
 	assert(p <= get_nrplayers());
-	return scenario_names_[p - 1];
+	return scenario_names_.at(p - 1);
 }
 
 const std::string& Map::get_scenario_player_ai(const PlayerNumber p) const {
 	assert(scenario_ais_.size() == get_nrplayers());
 	assert(p);
 	assert(p <= get_nrplayers());
-	return scenario_ais_[p - 1];
+	return scenario_ais_.at(p - 1);
 }
 
 bool Map::get_scenario_player_closeable(const PlayerNumber p) const {
 	assert(scenario_closeables_.size() == get_nrplayers());
 	assert(p);
 	assert(p <= get_nrplayers());
-	return scenario_closeables_[p - 1];
+	return scenario_closeables_.at(p - 1);
 }
 
 void Map::swap_filesystem(std::unique_ptr<FileSystem>& fs) {
@@ -916,28 +916,28 @@ void Map::set_scenario_player_tribe(PlayerNumber const p, const std::string& tri
 	assert(p);
 	assert(p <= get_nrplayers());
 	scenario_tribes_.resize(get_nrplayers());
-	scenario_tribes_[p - 1] = tribename;
+	scenario_tribes_.at(p - 1) = tribename;
 }
 
 void Map::set_scenario_player_name(PlayerNumber const p, const std::string& playername) {
 	assert(p);
 	assert(p <= get_nrplayers());
 	scenario_names_.resize(get_nrplayers());
-	scenario_names_[p - 1] = playername;
+	scenario_names_.at(p - 1) = playername;
 }
 
 void Map::set_scenario_player_ai(PlayerNumber const p, const std::string& ainame) {
 	assert(p);
 	assert(p <= get_nrplayers());
 	scenario_ais_.resize(get_nrplayers());
-	scenario_ais_[p - 1] = ainame;
+	scenario_ais_.at(p - 1) = ainame;
 }
 
 void Map::set_scenario_player_closeable(PlayerNumber const p, bool closeable) {
 	assert(p);
 	assert(p <= get_nrplayers());
 	scenario_closeables_.resize(get_nrplayers());
-	scenario_closeables_[p - 1] = closeable;
+	scenario_closeables_.at(p - 1) = closeable;
 }
 
 /*
@@ -1020,7 +1020,7 @@ Set the starting coordinates of a player
 */
 void Map::set_starting_pos(PlayerNumber const plnum, const Coords& c) {
 	assert(1 <= plnum && plnum <= get_nrplayers());
-	starting_pos_[plnum - 1] = c;
+	starting_pos_.at(plnum - 1) = c;
 }
 
 void Map::set_filename(const std::string& filename) {

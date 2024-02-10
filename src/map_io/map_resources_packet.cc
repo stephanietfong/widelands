@@ -46,7 +46,7 @@ void MapResourcesPacket::read(FileSystem& fs, EditorGameBase& egbase) {
 			std::map<uint32_t, uint32_t> smap;
 			for (uint32_t i = 0; i < nr_res; ++i) {
 				uint32_t const id = (packet_version >= 2) ? fr.unsigned_32() : fr.unsigned_16();
-				smap[id] = egbase.mutable_descriptions()->load_resource(fr.c_string());
+				smap.at(id) = egbase.mutable_descriptions()->load_resource(fr.c_string());
 			}
 
 			for (uint16_t y = 0; y < map->get_height(); ++y) {

@@ -283,7 +283,7 @@ WaresWorkersMap count_wares_on_flag_(Widelands::Flag& f,
 		if (rv.count(i) == 0u) {
 			rv.insert(Widelands::WareAmount(i, 1));
 		} else {
-			++rv[i];
+			++rv.at(i);
 		}
 	}
 	return rv;
@@ -353,7 +353,7 @@ int do_get_workers(lua_State* L,
 		if (c_workers.count(i) == 0u) {
 			c_workers.insert(WorkerAmount(i, 1));
 		} else {
-			++c_workers[i];
+			++c_workers.at(i);
 		}
 	}
 
@@ -377,7 +377,7 @@ int do_get_workers(lua_State* L,
 		for (const Widelands::DescriptionIndex& i : workers_list) {
 			Widelands::Quantity cnt = 0;
 			if (c_workers.count(i) != 0u) {
-				cnt = c_workers[i];
+				cnt = c_workers.at(i);
 			}
 			lua_pushstring(L, tribe.get_worker_descr(i)->name());
 			lua_pushuint32(L, cnt);
@@ -408,7 +408,7 @@ int do_set_workers(lua_State* L, TMapObject* pi, const WaresWorkersMap& valid_wo
 		if (!c_workers.count(i)) {
 			c_workers.insert(WorkerAmount(i, 1));
 		} else {
-			++c_workers[i];
+			++c_workers.at(i);
 		}
 		if (!setpoints.count(std::make_pair(i, Widelands::WareWorker::wwWORKER))) {
 			setpoints.insert(std::make_pair(std::make_pair(i, Widelands::WareWorker::wwWORKER), 0));
@@ -543,7 +543,7 @@ int do_get_soldiers(lua_State* L,
 
 			SoldiersMap::iterator i = hist.find(sd);
 			if (i == hist.end()) {
-				hist[sd] = 1;
+				hist.at(sd)= 1;
 			} else {
 				++i->second;
 			}
@@ -607,12 +607,12 @@ int do_set_soldiers(lua_State* L,
 
 		SoldiersMap::iterator i = hist.find(sd);
 		if (i == hist.end()) {
-			hist[sd] = 1;
+			hist.at(sd) = 1;
 		} else {
 			++i->second;
 		}
 		if (setpoints.count(sd) == 0u) {
-			setpoints[sd] = 0;
+			setpoints.at(sd) = 0;
 		}
 	}
 

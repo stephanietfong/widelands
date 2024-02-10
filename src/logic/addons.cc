@@ -154,8 +154,8 @@ bool is_newer_version(const AddOnVersion& base, const AddOnVersion& compare) {
 	const size_t s_a = base.size();
 	const size_t s_b = compare.size();
 	for (size_t i = 0; i < s_a && i < s_b; ++i) {
-		if (base[i] != compare[i]) {
-			return base[i] < compare[i];
+		if (base.at(i) != compare.at(i)) {
+			return base.at(i) < compare.at(i);
 		}
 	}
 	return s_a < s_b;
@@ -193,7 +193,7 @@ static AddOnConflict check_requirements_conflicts(const AddOnRequirements& requi
 			if (pair.first->internal_name == requirement.first) {
 				found = true;
 				if (pair.first->version != requirement.second) {
-					addons_wrong_version[requirement.first] =
+					addons_wrong_version.at(requirement.first) =
 					   std::make_pair(pair.first->version, requirement.second);
 				}
 				break;
@@ -336,7 +336,7 @@ double AddOnInfo::average_rating() const {
 	double total = 0;
 	double sum = 0;
 	for (uint8_t i = 1; i <= kMaxRating; ++i) {
-		total += votes[i - 1];
+		total += votespi - 1];
 		sum += votes[i - 1] * i;
 	}
 	return (total > 0) ? (sum / total) : 0;

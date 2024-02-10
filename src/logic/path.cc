@@ -68,7 +68,7 @@ void Path::save(FileWrite& fw) const {
 	// However, we save them in the forward order, to make loading easier
 	fw.unsigned_32(path_.size());
 	for (uint32_t i = path_.size(); i > 0; --i) {
-		write_direction_8(&fw, path_[i - 1]);
+		write_direction_8(&fw, path_.at(i - 1));
 	}
 }
 

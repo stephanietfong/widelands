@@ -384,7 +384,7 @@ void MineFieldsObserver::zero() {
 
 // Increase counter by one for specific ore/minefield type
 void MineFieldsObserver::add(const Widelands::DescriptionIndex idx) {
-	++stat[idx];
+	++stat.at(idx);
 }
 
 // Add ore into critical_ores
@@ -635,10 +635,10 @@ void ManagementData::new_dna_for_persistent(const uint8_t pn, const AiType type)
 
 		switch (dna_donor) {
 		case DnaParent::kPrimary:
-			set_military_number_at(i, AI_military_numbers_P1[i]);
+			set_military_number_at(i, AI_military_numbers_P1.at(i));
 			break;
 		case DnaParent::kSecondary:
-			set_military_number_at(i, AI_military_numbers_P2[i]);
+			set_military_number_at(i, AI_military_numbers_P2.at(i));
 			break;
 		}
 	}
@@ -654,12 +654,12 @@ void ManagementData::new_dna_for_persistent(const uint8_t pn, const AiType type)
 
 		switch (dna_donor) {
 		case DnaParent::kPrimary:
-			persistent_data->neuron_weights.push_back(input_weights_P1[i]);
-			persistent_data->neuron_functs.push_back(input_func_P1[i]);
+			persistent_data->neuron_weights.push_back(input_weights_P1.at(i));
+			persistent_data->neuron_functs.push_back(input_func_P1.at(i));
 			break;
 		case DnaParent::kSecondary:
-			persistent_data->neuron_weights.push_back(input_weights_P2[i]);
-			persistent_data->neuron_functs.push_back(input_func_P2[i]);
+			persistent_data->neuron_weights.push_back(input_weights_P2.at(i));
+			persistent_data->neuron_functs.push_back(input_func_P2.at(i));
 			break;
 		}
 	}
@@ -670,10 +670,10 @@ void ManagementData::new_dna_for_persistent(const uint8_t pn, const AiType type)
                                      DnaParent::kSecondary;
 		switch (dna_donor) {
 		case DnaParent::kPrimary:
-			persistent_data->f_neurons.push_back(f_neurons_P1[i]);
+			persistent_data->f_neurons.push_back(f_neurons_P1.at(i));
 			break;
 		case DnaParent::kSecondary:
-			persistent_data->f_neurons.push_back(f_neurons_P2[i]);
+			persistent_data->f_neurons.push_back(f_neurons_P2.at(i));
 			break;
 		}
 	}
@@ -826,7 +826,7 @@ void ManagementData::mutate(const uint8_t pn) {
 
 			if (changed_bits != 0u) {  // -> the f-neuron was changed
 				++mutation_stat[kFNeuronsPos];
-				persistent_data->f_neurons[item.get_id()] = item.get_int();
+				persistent_data->f_neurons.at(item.get_id()) = item.get_int();
 				verb_log_dbg("      F-Neuron %2d: new value: %13ul, changed bits: %2d   %s\n",
 				             item.get_id(), item.get_int(), changed_bits,
 				             (preferred_f_neurons.count(item.get_id()) > 0) ? "aggressive" : "");
@@ -851,14 +851,14 @@ void ManagementData::copy_persistent_to_local() {
 	neuron_pool.clear();
 	for (uint32_t i = 0; i < Widelands::Player::AiPersistentState::kNeuronPoolSize; ++i) {
 		neuron_pool.emplace_back(
-		   persistent_data->neuron_weights[i], persistent_data->neuron_functs[i], i);
+		   persistent_data->neuron_weights.at(i), persistent_data->neuron_functs.at(i), i);
 	}
 
 	assert(persistent_data->f_neurons.size() ==
 	       Widelands::Player::AiPersistentState::kFNeuronPoolSize);
 	f_neuron_pool.clear();
 	for (uint32_t i = 0; i < Widelands::Player::AiPersistentState::kFNeuronPoolSize; ++i) {
-		f_neuron_pool.emplace_back(persistent_data->f_neurons[i], i);
+		f_neuron_pool.emplace_back(persistent_data->f_neurons.at(i), i);
 	}
 
 	assert(persistent_data->magic_numbers.size() ==
@@ -881,13 +881,13 @@ void ManagementData::test_consistency(bool itemized) {
 	if (itemized) {
 		// comparing contents of neuron and fneuron pools
 		for (uint16_t i = 0; i < Widelands::Player::AiPersistentState::kNeuronPoolSize; ++i) {
-			assert(persistent_data->neuron_weights[i] == neuron_pool[i].get_weight());
-			assert(persistent_data->neuron_functs[i] == neuron_pool[i].get_type());
-			assert(neuron_pool[i].get_id() == i);
+			assert(persistent_data->neuron_weights.at(i) == neuron_pool.at(i).get_weight());
+			assert(persistent_data->neuron_functs.at(i) == neuron_pool.at(i).get_type());
+			assert(neuron_pool.at(i).get_id() == i);
 		}
 		for (uint16_t i = 0; i < Widelands::Player::AiPersistentState::kFNeuronPoolSize; ++i) {
-			assert(persistent_data->f_neurons[i] == f_neuron_pool[i].get_int());
-			assert(f_neuron_pool[i].get_id() == i);
+			assert(persistent_data->f_neurons.at(i) == f_neuron_pool.at(i).get_int());
+			assert(f_neuron_pool.at(i).get_id() == i);
 		}
 	}
 }
@@ -1019,25 +1019,25 @@ void PlayersStrengths::add(Widelands::PlayerNumber pn,
 		all_stats_.insert(
 		   std::make_pair(opn, PlayerStat(pltn, pp, op, o60p, cs, land, oland, o60l, ds, bld, def)));
 	} else {
-		all_stats_[opn].players_power = pp;
-		all_stats_[opn].old_players_power = op;
-		all_stats_[opn].old60_players_power = o60p;
-		all_stats_[opn].players_casualities = cs;
-		all_stats_[opn].players_land = land;
-		all_stats_[opn].old_players_land = oland;
-		all_stats_[opn].old60_players_land = o60l;
-		all_stats_[opn].players_diplomacy_score = ds;
-		all_stats_[opn].players_buildings = bld;
-		all_stats_[opn].defeated = def;
+		all_stats_.at(opn).players_power = pp;
+		all_stats_.at(opn).old_players_power = op;
+		all_stats_.at(opn).old60_players_power = o60p;
+		all_stats_.at(opn).players_casualities = cs;
+		all_stats_.at(opn).players_land = land;
+		all_stats_.at(opn).old_players_land = oland;
+		all_stats_.at(opn).old60_players_land = o60l;
+		all_stats_.at(opn).players_diplomacy_score = ds;
+		all_stats_.at(opn).players_buildings = bld;
+		all_stats_.at(opn).defeated = def;
 		assert(this_player_number == pn);
 		if (this_player_team != mytn) {
 			verb_log_dbg("%2d: Team changed %d -> %d\n", pn, this_player_team, mytn);
 			this_player_team = mytn;
 		}
-		if (all_stats_[opn].team_number != pltn) {
+		if (all_stats_.at(opn).team_number != pltn) {
 			verb_log_dbg("%2d: Team changed for player %d: %d -> %d\n", pn, opn,
-			             all_stats_[opn].team_number, pltn);
-			all_stats_[opn].team_number = pltn;
+			             all_stats_.at(opn).team_number, pltn);
+			all_stats_.at(opn).team_number = pltn;
 		}
 	}
 }
@@ -1066,13 +1066,13 @@ void PlayersStrengths::recalculate_team_power() {
 		++active_players_;
 		if (item.second.team_number > 0) {  // is a member of a team
 			if (team_powers_.count(item.second.team_number) > 0) {
-				team_powers_[item.second.team_number] += item.second.players_power;
-				team_scores_sum_[item.second.team_number] += item.second.players_diplomacy_score;
+				team_powers_.at(item.second.team_number) += item.second.players_power;
+				team_scores_sum_.at(item.second.team_number) += item.second.players_diplomacy_score;
 			} else {
-				team_powers_[item.second.team_number] = item.second.players_power;
-				team_scores_sum_[item.second.team_number] = item.second.players_diplomacy_score;
+				team_powers_.at(item.second.team_number) = item.second.players_power;
+				team_scores_sum_.at(item.second.team_number) = item.second.players_diplomacy_score;
 			}
-			++team_members_[item.second.team_number];
+			++team_members_.at(item.second.team_number);
 
 			if (item.second.team_number == this_player_team &&
 			    item.second.players_diplomacy_score < worst_ally_score_) {
@@ -1080,7 +1080,7 @@ void PlayersStrengths::recalculate_team_power() {
 				worst_ally_ = item.first;
 			}
 		} else {
-			team_members_[0] = 1;
+			team_members_.at(0) = 1;
 		}
 	}
 	verb_log_dbg("AI: %d players are active\n", active_players_);
@@ -1106,11 +1106,11 @@ uint8_t PlayersStrengths::enemies_seen_lately_count(const Time& gametime) {
 
 // Returns count of members in team
 uint8_t PlayersStrengths::members_in_team(Widelands::TeamNumber tn) {
-	return team_members_[tn];
+	return team_members_.at(tn);
 }
 
 bool PlayersStrengths::get_is_alone(const Widelands::PlayerNumber pn) {
-	const Widelands::TeamNumber tn = all_stats_[pn].team_number;
+	const Widelands::TeamNumber tn = all_stats_.at(pn).team_number;
 	return tn == 0 || members_in_team(tn) == 1;
 }
 
@@ -1134,14 +1134,14 @@ int32_t PlayersStrengths::get_team_average_score(const Widelands::TeamNumber tn,
 	assert(team_scores_sum_.count(tn) == 1);
 
 	const bool exclude = exclude_pn != 0;
-	const int32_t team_sc = team_scores_sum_[tn] - (exclude ? get_diplo_score(exclude_pn) : 0);
+	const int32_t team_sc = team_scores_sum_.at(tn) - (exclude ? get_diplo_score(exclude_pn) : 0);
 	const uint8_t n_included = members_in_team(tn) - (exclude ? 1 : 0);
 	return team_sc / n_included;
 }
 
 // Returns power of a team
 uint32_t PlayersStrengths::team_power(Widelands::TeamNumber tn) {
-	return team_powers_[tn];
+	return team_powers_.at(tn);
 }
 
 // Make the decision whether own or player's team is better
@@ -1153,7 +1153,7 @@ void PlayersStrengths::join_or_invite(const Widelands::PlayerNumber pn,
 		return;
 	}
 
-	const Widelands::TeamNumber other_tn = all_stats_[pn].team_number;
+	const Widelands::TeamNumber other_tn = all_stats_.at(pn).team_number;
 	const bool can_invite = members_in_team(this_player_team) < active_players_ - 1;
 	const bool can_join = members_in_team(other_tn) < active_players_ - 1;
 	const bool me_alone = get_is_alone(this_player_number);
@@ -1231,7 +1231,7 @@ void PlayersStrengths::set_last_time_seen(const Time& seentime, Widelands::Playe
 	if (all_stats_.count(pn) == 0) {
 		return;
 	}
-	all_stats_[pn].last_time_seen = seentime;
+	all_stats_.at(pn).last_time_seen = seentime;
 }
 
 // When we send a diplo request, we use this to store the time
@@ -1240,7 +1240,7 @@ void PlayersStrengths::set_last_time_requested(const Time& requesttime,
 	if (all_stats_.count(pn) == 0) {
 		return;
 	}
-	all_stats_[pn].last_time_requested = requesttime;
+	all_stats_.at(pn).last_time_requested = requesttime;
 }
 
 bool PlayersStrengths::get_is_enemy(Widelands::PlayerNumber other_player_number) {
@@ -1259,7 +1259,7 @@ bool PlayersStrengths::get_is_enemy(Widelands::PlayerNumber other_player_number)
 		return false;
 	}
 	// finally we compare my team number of the other player team number
-	return all_stats_[other_player_number].team_number != this_player_team;
+	return all_stats_.at(other_player_number).team_number != this_player_team;
 }
 
 // Was the player seen less then 2 minutes ago
@@ -1269,10 +1269,10 @@ bool PlayersStrengths::player_seen_lately(Widelands::PlayerNumber pn, const Time
 		verb_log_warn("AI %d: player has no statistics yet\n", this_player_number);
 		return false;
 	}
-	if (all_stats_[pn].last_time_seen.is_invalid()) {
+	if (all_stats_.at(pn).last_time_seen.is_invalid()) {
 		return false;
 	}
-	return all_stats_[pn].last_time_seen + Duration(2U * 60U * 1000U) > gametime;
+	return all_stats_.at(pn).last_time_seen + Duration(2U * 60U * 1000U) > gametime;
 }
 
 // Has a diplo request been sent in the last 5 + X minutes
@@ -1283,19 +1283,19 @@ bool PlayersStrengths::player_diplo_requested_lately(Widelands::PlayerNumber pn,
 		verb_log_warn("AI %d: player has no statistics yet\n", this_player_number);
 		return false;
 	}
-	if (all_stats_[pn].last_time_requested.is_invalid()) {
+	if (all_stats_.at(pn).last_time_requested.is_invalid()) {
 		return false;
 	}
 
 	Duration request_interval = Duration(
-	   (RNG::static_rand(std::abs(all_stats_[pn].players_diplomacy_score) + 1) + 5) * 60U * 1000U);
-	return all_stats_[pn].last_time_requested + request_interval > gametime;
+	   (RNG::static_rand(std::abs(all_stats_.at(pn).players_diplomacy_score) + 1) + 5) * 60U * 1000U);
+	return all_stats_.at(pn).last_time_requested + request_interval > gametime;
 }
 
 // This is the strength of a player
 uint32_t PlayersStrengths::get_player_power(Widelands::PlayerNumber pn) {
 	if (all_stats_.count(pn) > 0) {
-		return all_stats_[pn].players_power;
+		return all_stats_.at(pn).players_power;
 	}
 	return 0;
 }
@@ -1303,19 +1303,19 @@ uint32_t PlayersStrengths::get_player_power(Widelands::PlayerNumber pn) {
 // Amount of buildings of a player
 uint32_t PlayersStrengths::get_player_buildings(Widelands::PlayerNumber pn) {
 	if (all_stats_.count(pn) > 0) {
-		return all_stats_[pn].players_buildings;
+		return all_stats_.at(pn).players_buildings;
 	}
 	return 0;
 }
 
 Widelands::TeamNumber PlayersStrengths::get_team_number(const Widelands::PlayerNumber pn) {
-	return all_stats_[pn].team_number;
+	return all_stats_.at(pn).team_number;
 }
 
 // This is the diplomatic score of a player
 int32_t PlayersStrengths::get_diplo_score(Widelands::PlayerNumber pn) {
 	if (all_stats_.count(pn) > 0) {
-		return all_stats_[pn].players_diplomacy_score;
+		return all_stats_.at(pn).players_diplomacy_score;
 	}
 	return 0;
 }
@@ -1323,7 +1323,7 @@ int32_t PlayersStrengths::get_diplo_score(Widelands::PlayerNumber pn) {
 // This is the land size owned by player
 uint32_t PlayersStrengths::get_player_land(Widelands::PlayerNumber pn) {
 	if (all_stats_.count(pn) > 0) {
-		return all_stats_[pn].players_land;
+		return all_stats_.at(pn).players_land;
 	}
 	return 0;
 }
@@ -1416,14 +1416,14 @@ uint32_t PlayersStrengths::get_max_buildings() {
 
 uint32_t PlayersStrengths::get_old_player_power(Widelands::PlayerNumber pn) {
 	if (all_stats_.count(pn) > 0) {
-		return all_stats_[pn].old_players_power;
+		return all_stats_.at(pn).old_players_power;
 	}
 	return 0;
 }
 
 uint32_t PlayersStrengths::get_old60_player_power(Widelands::PlayerNumber pn) {
 	if (all_stats_.count(pn) > 0) {
-		return all_stats_[pn].old60_players_power;
+		return all_stats_.at(pn).old60_players_power;
 	}
 	return 0;
 }
@@ -1433,7 +1433,7 @@ uint32_t PlayersStrengths::get_old_player_land(Widelands::PlayerNumber pn) {
 		verb_log_dbg(" AI %d: Players statistics are still empty\n", pn);
 		return 0;
 	}
-	return all_stats_[pn].old_players_land;
+	return all_stats_.at(pn).old_players_land;
 }
 
 uint32_t PlayersStrengths::get_old60_player_land(Widelands::PlayerNumber pn) {
@@ -1441,7 +1441,7 @@ uint32_t PlayersStrengths::get_old60_player_land(Widelands::PlayerNumber pn) {
 		verb_log_dbg(" AI %d: Players statistics are still empty\n", pn);
 		return 0;
 	}
-	return all_stats_[pn].old60_players_land;
+	return all_stats_.at(pn).old60_players_land;
 }
 
 uint32_t PlayersStrengths::get_old_visible_enemies_power(const Time& gametime) {
@@ -1459,11 +1459,11 @@ uint32_t PlayersStrengths::get_modified_player_power(Widelands::PlayerNumber pn)
 	uint32_t result = 0;
 	Widelands::TeamNumber team = 0;
 	if (all_stats_.count(pn) > 0) {
-		result = all_stats_[pn].players_power;
-		team = all_stats_[pn].team_number;
+		result = all_stats_.at(pn).players_power;
+		team = all_stats_.at(pn).team_number;
 	}
 	if (team > 0 && team_powers_.count(team) > 0) {
-		result = result + (team_powers_[team] - result) / 3;
+		result = result + (team_powers_.at(team) - result) / 3;
 	}
 	return result;
 }
@@ -1481,7 +1481,7 @@ bool PlayersStrengths::strong_enough(Widelands::PlayerNumber pl) {
 	if (all_stats_.count(pl) == 0) {
 		return false;
 	}
-	uint32_t my_strength = all_stats_[pl].players_power;
+	uint32_t my_strength = all_stats_.at(pl).players_power;
 	uint32_t strongest_opponent_strength = 0;
 	for (const auto& item : all_stats_) {
 		if (!players_in_same_team(item.first, pl) && pl != item.first) {
@@ -1566,11 +1566,11 @@ bool FlagWarehouseDistances::set_distance(const uint32_t flag_coords,
                                           const Time& gametime,
                                           uint32_t const nearest_warehouse) {
 	if (flags_map.count(flag_coords) == 0) {
-		flags_map[flag_coords] =
+		flags_map.at(flag_coords) =
 		   FlagWarehouseDistances::FlagInfo(gametime, distance, nearest_warehouse);
 		return true;
 	}
-	return flags_map[flag_coords].update(gametime, distance, nearest_warehouse);
+	return flags_map.at(flag_coords).update(gametime, distance, nearest_warehouse);
 }
 
 uint16_t FlagWarehouseDistances::count() const {
@@ -1586,18 +1586,18 @@ int16_t FlagWarehouseDistances::get_wh_distance(const uint32_t flag_coords,
 		}
 		return kWhNotReachable;
 	}
-	return flags_map[flag_coords].get(gametime, nw);
+	return flags_map.at(flag_coords).get(gametime, nw);
 }
 
 void FlagWarehouseDistances::set_road_built(const uint32_t coords_hash, const Time& gametime) {
 	if (flags_map.count(coords_hash) == 1) {
-		flags_map[coords_hash].set_road_built(gametime);
+		flags_map.at(coords_hash).set_road_built(gametime);
 	}
 }
 
 bool FlagWarehouseDistances::is_road_prohibited(const uint32_t coords_hash, const Time& gametime) {
 	if (flags_map.count(coords_hash) == 1) {
-		return flags_map[coords_hash].is_road_prohibited(gametime);
+		return flags_map.at(coords_hash).is_road_prohibited(gametime);
 	}
 	return false;
 }

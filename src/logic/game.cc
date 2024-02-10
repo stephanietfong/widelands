@@ -304,7 +304,7 @@ void Game::init_newgame(const GameSettings& settings) {
 	std::vector<PlayerSettings> shared;
 	std::vector<uint8_t> shared_num;
 	for (uint32_t i = 0; i < settings.players.size(); ++i) {
-		const PlayerSettings& playersettings = settings.players[i];
+		const PlayerSettings& playersettings = settings.players.at(i);
 
 		if (playersettings.state == PlayerSettings::State::kClosed ||
 		    playersettings.state == PlayerSettings::State::kOpen) {
@@ -358,7 +358,7 @@ void Game::init_newgame(const GameSettings& settings) {
 		if ((settings.flags & GameSettings::Flags::kCustomStartingPositions) != 0) {
 			iterate_players_existing(p, map().get_nrplayers(), *this, pl) {
 				if (settings.get_tribeinfo(pl->tribe().name())
-				       .initializations[pl->initialization_index()]
+				       .initializations.at(pl->initialization_index())
 				       .uses_map_starting_position) {
 					pl->start_picking_custom_starting_position();
 				}
@@ -436,7 +436,7 @@ void Game::init_savegame(const GameSettings& settings) {
 
 		// Players might have selected a different AI type
 		for (uint8_t i = 0; i < settings.players.size(); ++i) {
-			const PlayerSettings& playersettings = settings.players[i];
+			const PlayerSettings& playersettings = settings.players.at(i);
 			if (playersettings.state == PlayerSettings::State::kComputer) {
 				get_player(i + 1)->set_ai(playersettings.ai);
 			}
@@ -1423,23 +1423,23 @@ void Game::sample_statistics() {
 				break;
 			}
 		}
-		nr_wares[p - 1] = wastock;
-		nr_workers[p - 1] = wostock;
-		nr_ships[p - 1] = plr->ships().size();
-		nr_naval_victories[p - 1] = plr->naval_victories();
-		nr_naval_losses[p - 1] = plr->naval_losses();
-		nr_casualties[p - 1] = plr->casualties();
-		nr_kills[p - 1] = plr->kills();
-		nr_msites_lost[p - 1] = plr->msites_lost();
-		nr_msites_defeated[p - 1] = plr->msites_defeated();
-		nr_civil_blds_lost[p - 1] = plr->civil_blds_lost();
-		nr_civil_blds_defeated[p - 1] = plr->civil_blds_defeated();
+		nr_wares.at(p - 1) = wastock;
+		nr_workers.at(p - 1) = wostock;
+		nr_ships.at(p - 1) = plr->ships().size();
+		nr_naval_victories.at(p - 1) = plr->naval_victories();
+		nr_naval_losses.at(p - 1) = plr->naval_losses();
+		nr_casualties.at(p - 1) = plr->casualties();
+		nr_kills.at(p - 1) = plr->kills();
+		nr_msites_lost.at(p - 1) = plr->msites_lost();
+		nr_msites_defeated.at.at(p - 1) = plr->msites_defeated();
+		nr_civil_blds_lost.at(p - 1) = plr->civil_blds_lost();
+		nr_civil_blds_defeated.at(p - 1) = plr->civil_blds_defeated();
 	}
 
 	// Now, divide the statistics
 	for (uint32_t i = 0; i < map().get_nrplayers(); ++i) {
-		if (productivity[i] != 0u) {
-			productivity[i] /= nr_production_sites[i];
+		if (productivity.at(i) != 0u) {
+			productivity.at(i) /= nr_production_sites.at(i);
 		}
 	}
 
@@ -1452,29 +1452,29 @@ void Game::sample_statistics() {
 			std::unique_ptr<LuaCoroutine> cr(hook->get_coroutine("calculator"));
 			cr->push_arg(plr);
 			cr->resume();
-			custom_statistic[p - 1] = cr->pop_uint32();
+			custom_statistic.at(p - 1) = cr->pop_uint32();
 		}
 	}
 
 	// Now, push this on the general statistics
 	general_stats_.resize(map().get_nrplayers());
 	for (uint32_t i = 0; i < map().get_nrplayers(); ++i) {
-		general_stats_[i].land_size.push_back(land_size[i]);
-		general_stats_[i].nr_buildings.push_back(nr_buildings[i]);
-		general_stats_[i].nr_ships.push_back(nr_ships[i]);
-		general_stats_[i].nr_naval_victories.push_back(nr_naval_victories[i]);
-		general_stats_[i].nr_naval_losses.push_back(nr_naval_losses[i]);
-		general_stats_[i].nr_casualties.push_back(nr_casualties[i]);
-		general_stats_[i].nr_kills.push_back(nr_kills[i]);
-		general_stats_[i].nr_msites_lost.push_back(nr_msites_lost[i]);
-		general_stats_[i].nr_msites_defeated.push_back(nr_msites_defeated[i]);
-		general_stats_[i].nr_civil_blds_lost.push_back(nr_civil_blds_lost[i]);
-		general_stats_[i].nr_civil_blds_defeated.push_back(nr_civil_blds_defeated[i]);
-		general_stats_[i].miltary_strength.push_back(lroundf(miltary_strength[i]));
-		general_stats_[i].nr_workers.push_back(nr_workers[i]);
-		general_stats_[i].nr_wares.push_back(nr_wares[i]);
-		general_stats_[i].productivity.push_back(productivity[i]);
-		general_stats_[i].custom_statistic.push_back(custom_statistic[i]);
+		general_stats_.at(i).land_size.push_back(land_size.at(i));
+		general_stats_.at(i).nr_buildings.push_back(nr_buildings.at(i));
+		general_stats_.at(i).nr_ships.push_back(nr_ships.at(i));
+		general_stats_.at(i).nr_naval_victories.push_back(nr_naval_victories.at(i));
+		general_stats_.at(i).nr_naval_losses.push_back(nr_naval_losses.at(i));
+		general_stats_.at(i).nr_casualties.push_back(nr_casualties.at(i));
+		general_stats_.at(i).nr_kills.push_back(nr_kills.at(i));
+		general_stats_.at(i).nr_msites_lost.push_back(nr_msites_lost.at(i));
+		general_stats_.at(i).nr_msites_defeated.push_back(nr_msites_defeated.at(i));
+		general_stats_.at(i).nr_civil_blds_lost.push_back(nr_civil_blds_lost.at(i));
+		general_stats_.at(i).nr_civil_blds_defeated.push_back(nr_civil_blds_defeated.at(i));
+		general_stats_.at(i).miltary_strength.push_back(lroundf(miltary_strength.at(i)));
+		general_stats_.at(i).nr_workers.push_back(nr_workers.at(i));
+		general_stats_.at(i).nr_wares.push_back(nr_wares.at(i));
+		general_stats_.at(i).productivity.push_back(productivity.at(i));
+		general_stats_.at(i).custom_statistic.push_back(custom_statistic.at(i));
 	}
 
 	// Calculate statistics for the players
@@ -1497,43 +1497,43 @@ void Game::read_statistics(FileRead& fr, uint16_t packet_version) {
 	general_stats_.resize(nr_players);
 
 	iterate_players_existing_novar(p, nr_players, *this) {
-		general_stats_[p - 1].land_size.resize(entries);
-		general_stats_[p - 1].nr_workers.resize(entries);
-		general_stats_[p - 1].nr_buildings.resize(entries);
-		general_stats_[p - 1].nr_wares.resize(entries);
-		general_stats_[p - 1].productivity.resize(entries);
-		general_stats_[p - 1].nr_ships.resize(entries);
-		general_stats_[p - 1].nr_naval_victories.resize(entries);
-		general_stats_[p - 1].nr_naval_losses.resize(entries);
-		general_stats_[p - 1].nr_casualties.resize(entries);
-		general_stats_[p - 1].nr_kills.resize(entries);
-		general_stats_[p - 1].nr_msites_lost.resize(entries);
-		general_stats_[p - 1].nr_msites_defeated.resize(entries);
-		general_stats_[p - 1].nr_civil_blds_lost.resize(entries);
-		general_stats_[p - 1].nr_civil_blds_defeated.resize(entries);
-		general_stats_[p - 1].miltary_strength.resize(entries);
-		general_stats_[p - 1].custom_statistic.resize(entries);
+		general_stats_.at(p - 1).land_size.resize(entries);
+		general_stats_.at(p - 1).nr_workers.resize(entries);
+		general_stats_.at(p - 1).nr_buildings.resize(entries);
+		general_stats_.at(p - 1).nr_wares.resize(entries);
+		general_stats_.at(p - 1).productivity.resize(entries);
+		general_stats_.at(p - 1).nr_ships.resize(entries);
+		general_stats_.at(p - 1).nr_naval_victories.resize(entries);
+		general_stats_.at(p - 1).nr_naval_losses.resize(entries);
+		general_stats_.at(p - 1).nr_casualties.resize(entries);
+		general_stats_.at(p - 1).nr_kills.resize(entries);
+		general_stats_.at(p - 1).nr_msites_lost.resize(entries);
+		general_stats_.at(p - 1).nr_msites_defeated.resize(entries);
+		general_stats_.at(p - 1).nr_civil_blds_lost.resize(entries);
+		general_stats_.at(p - 1).nr_civil_blds_defeated.resize(entries);
+		general_stats_.at(p - 1).miltary_strength.resize(entries);
+		general_stats_.at(p - 1).custom_statistic.resize(entries);
 	}
 
 	iterate_players_existing_novar(
-	   p, nr_players, *this) for (uint32_t j = 0; j < general_stats_[p - 1].land_size.size(); ++j) {
-		general_stats_[p - 1].land_size[j] = fr.unsigned_32();
-		general_stats_[p - 1].nr_workers[j] = fr.unsigned_32();
-		general_stats_[p - 1].nr_buildings[j] = fr.unsigned_32();
-		general_stats_[p - 1].nr_wares[j] = fr.unsigned_32();
-		general_stats_[p - 1].productivity[j] = fr.unsigned_32();
-		general_stats_[p - 1].nr_casualties[j] = fr.unsigned_32();
-		general_stats_[p - 1].nr_kills[j] = fr.unsigned_32();
-		general_stats_[p - 1].nr_msites_lost[j] = fr.unsigned_32();
-		general_stats_[p - 1].nr_msites_defeated[j] = fr.unsigned_32();
-		general_stats_[p - 1].nr_civil_blds_lost[j] = fr.unsigned_32();
-		general_stats_[p - 1].nr_civil_blds_defeated[j] = fr.unsigned_32();
-		general_stats_[p - 1].miltary_strength[j] = fr.unsigned_32();
-		general_stats_[p - 1].custom_statistic[j] = fr.unsigned_32();
+	   p, nr_players, *this) for (uint32_t j = 0; j < general_stats_.at(p - 1).land_size.size(); ++j) {
+		general_stats_.at(p - 1).land_size.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).nr_workers.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).nr_buildings.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).nr_wares.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).productivity.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).nr_casualties.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).nr_kills.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).nr_msites_lost.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).nr_msites_defeated.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).nr_civil_blds_lost.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).nr_civil_blds_defeated.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).miltary_strength.at(j) = fr.unsigned_32();
+		general_stats_.at(p - 1).custom_statistic.at(j) = fr.unsigned_32();
 		// TODO(Nordfriese): Savegame compatibility v1.1
-		general_stats_[p - 1].nr_ships[j] = packet_version >= 32 ? fr.unsigned_32() : 0;
-		general_stats_[p - 1].nr_naval_victories[j] = packet_version >= 32 ? fr.unsigned_32() : 0;
-		general_stats_[p - 1].nr_naval_losses[j] = packet_version >= 32 ? fr.unsigned_32() : 0;
+		general_stats_.at(p - 1).nr_ships.at(j) = packet_version >= 32 ? fr.unsigned_32() : 0;
+		general_stats_.at(p - 1).nr_naval_victories.at(j) = packet_version >= 32 ? fr.unsigned_32() : 0;
+		general_stats_.at(p - 1).nr_naval_losses.at(j) = packet_version >= 32 ? fr.unsigned_32() : 0;
 	}
 }
 
@@ -1549,29 +1549,29 @@ void Game::write_statistics(FileWrite& fw) {
 
 	const PlayerNumber nr_players = map().get_nrplayers();
 	iterate_players_existing_novar(p, nr_players, *this) if (!general_stats_.empty()) {
-		entries = general_stats_[p - 1].land_size.size();
+		entries = general_stats_.at(p - 1).land_size.size();
 		break;
 	}
 
 	fw.unsigned_16(entries);
 
 	iterate_players_existing_novar(p, nr_players, *this) for (uint32_t j = 0; j < entries; ++j) {
-		fw.unsigned_32(general_stats_[p - 1].land_size[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_workers[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_buildings[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_wares[j]);
-		fw.unsigned_32(general_stats_[p - 1].productivity[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_casualties[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_kills[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_msites_lost[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_msites_defeated[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_civil_blds_lost[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_civil_blds_defeated[j]);
-		fw.unsigned_32(general_stats_[p - 1].miltary_strength[j]);
-		fw.unsigned_32(general_stats_[p - 1].custom_statistic[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_ships[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_naval_victories[j]);
-		fw.unsigned_32(general_stats_[p - 1].nr_naval_losses[j]);
+		fw.unsigned_32(general_stats_.at(p - 1).land_size.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_workers.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_buildings.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_wares.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).productivity.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_casualties.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_kills.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_msites_lost.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_msites_defeated.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_civil_blds_lost.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_civil_blds_defeated.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).miltary_strength.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).custom_statistic.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_ships.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_naval_victories.at(j));
+		fw.unsigned_32(general_stats_.at(p - 1).nr_naval_losses.at(j));
 	}
 }
 }  // namespace Widelands
