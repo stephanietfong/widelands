@@ -64,13 +64,13 @@ void SinglePlayerTribeDropdown::rebuild() {
 		return;
 	}
 	const GameSettings& settings = settings_->settings();
-	const PlayerSettings& player_setting = settings.players[id_];
+	const PlayerSettings& player_setting = settings.players.at(id_);
 	dropdown_.clear();
 	if (player_setting.state == PlayerSettings::State::kShared) {
 		for (size_t i = 0; i < settings.players.size(); ++i) {
 			if (i != id_) {
 				// Do not add players that are also shared_in or closed.
-				const PlayerSettings& other_setting = settings.players[i];
+				const PlayerSettings& other_setting = settings.players.at(i);
 				if (!PlayerSettings::can_be_shared(other_setting.state)) {
 					continue;
 				}
@@ -169,7 +169,7 @@ void SinglePlayerPlayerTypeDropdown::fill() {
 	const GameSettings& settings = settings_->settings();
 	dropdown_.clear();
 	// AIs
-	if (settings.get_tribeinfo(settings.players[id_].tribe).suited_for_ai) {
+	if (settings.get_tribeinfo(settings.players.at(id_).tribe).suited_for_ai) {
 		for (const auto* impl : AI::ComputerPlayer::get_implementations()) {
 			dropdown_.add(_(impl->descname), format("%s%s", kAiNamePrefix, impl->name),
 			              g_image_cache->get(impl->icon_filename), false, _(impl->descname));
@@ -296,7 +296,7 @@ void SinglePlayerStartTypeDropdown::rebuild() {
 
 void SinglePlayerStartTypeDropdown::fill() {
 	const GameSettings& settings = settings_->settings();
-	const PlayerSettings& player_setting = settings.players[id_];
+	const PlayerSettings& player_setting = settings.players.at(id_);
 	i18n::Textdomain td("tribes");  // for translated initialisation
 	Widelands::AllTribes all_tribes = Widelands::get_all_tribeinfos(nullptr);
 	const Widelands::TribeBasicInfo tribeinfo =
@@ -312,7 +312,7 @@ void SinglePlayerStartTypeDropdown::fill() {
 	}
 
 	for (size_t i = 0; i < tribeinfo.initializations.size(); ++i) {
-		const Widelands::TribeBasicInfo::Initialization& addme = tribeinfo.initializations[i];
+		const Widelands::TribeBasicInfo::Initialization& addme = tribeinfo.initializations.at(i);
 		bool matches_tags = true;
 		for (const std::string& tag : addme.required_map_tags) {
 			if (tags.count(tag) == 0u) {
@@ -367,7 +367,7 @@ void SinglePlayerTeamDropdown::rebuild() {
 		return;
 	}
 	const GameSettings& settings = settings_->settings();
-	const PlayerSettings& player_setting = settings.players[id_];
+	const PlayerSettings& player_setting = settings.players.at(id_);
 	if (player_setting.state == PlayerSettings::State::kShared) {
 		dropdown_.set_visible(false);
 		dropdown_.set_enabled(false);

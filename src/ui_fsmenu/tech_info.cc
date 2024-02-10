@@ -177,14 +177,14 @@ std::string TechInfo::get_richtext() const {
 		bool wrap = !entry.values.empty() &&
 		            text_width(localized_label, label_font) +
 		                  // Only some short ones are translatable, let's keep it simple...
-		                  text_width(entry.values[0], value_font) >
+		                  text_width(entry.values.at(0), value_font) >
 		               kMinWidth;
 
 		// TODO(tothxa): text_width() is not reliable for RTL (bidi?) (make wrap const above if fixed)
 		if (rtl && !entry.values.empty() && !wrap) {
 			// Unicode is hard, use untranslated strings for approximation...
 			const int label_approx = entry.label.length() * label_font.size() * 3 / 5;  // bold
-			const int value_approx = entry.values[0].length() * value_font.size() * 5 / 9;
+			const int value_approx = entry.values.at(0).length() * value_font.size() * 5 / 9;
 			wrap = label_approx + value_approx > kMinWidth;
 		}
 

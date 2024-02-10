@@ -243,7 +243,7 @@ void Box::layout() {
 	// divide the remaining space by the number of remaining infinite
 	// spaces every time, and not just one.
 	for (size_t idx = 0; idx < items_.size(); ++idx) {
-		Item& item = items_[idx];
+		Item& item = items_.at(idx);
 		if (item.fillspace && is_item_visible(idx)) {
 			assert(infspace_count > 0);
 			// Avoid division by 0
@@ -279,7 +279,7 @@ void Box::update_positions() {
 		get_item_size(idx, &depth, &breadth);
 
 		if (items_[idx].type == Item::ItemPanel) {
-			set_item_size(idx, depth, items_[idx].u.panel.fullsize ? totalbreadth : breadth);
+			set_item_size(idx, depth, items_.at(idx).u.panel.fullsize ? totalbreadth : breadth);
 			// Update depth, in case item did self-layouting
 			get_item_size(idx, &depth, &breadth);
 			set_item_pos(idx, totaldepth - scrollpos);
@@ -380,7 +380,7 @@ void Box::add_inf_space() {
  * Spaces are always visible.
  */
 bool Box::is_item_visible(uint32_t idx) {
-	return items_[idx].type == Item::ItemSpace || items_[idx].u.panel.panel->is_visible();
+	return items_.at(idx).type == Item::ItemSpace || items_.at(idx).u.panel.panel->is_visible();
 }
 
 /**
@@ -391,7 +391,7 @@ bool Box::is_item_visible(uint32_t idx) {
 void Box::get_item_desired_size(uint32_t const idx, int* depth, int* breadth) {
 	assert(idx < items_.size());
 
-	const Item& it = items_[idx];
+	const Item& it = items_.at(idx);
 
 	switch (it.type) {
 	case Item::ItemPanel:
@@ -421,7 +421,7 @@ void Box::get_item_desired_size(uint32_t const idx, int* depth, int* breadth) {
 void Box::get_item_size(uint32_t const idx, int* depth, int* breadth) {
 	assert(idx < items_.size());
 
-	const Item& it = items_[idx];
+	const Item& it = items_.at(idx);
 
 	get_item_desired_size(idx, depth, breadth);
 	*depth += it.assigned_var_depth;
@@ -433,7 +433,7 @@ void Box::get_item_size(uint32_t const idx, int* depth, int* breadth) {
 void Box::set_item_size(uint32_t idx, int depth, int breadth) {
 	assert(idx < items_.size());
 
-	const Item& it = items_[idx];
+	const Item& it = items_.at(idx);
 
 	if (it.type == Item::ItemPanel) {
 		if (orientation_ == Horizontal) {
@@ -452,7 +452,7 @@ void Box::set_item_size(uint32_t idx, int depth, int breadth) {
 void Box::set_item_pos(uint32_t idx, int32_t pos) {
 	assert(idx < items_.size());
 
-	const Item& it = items_[idx];
+	const Item& it = items_.at(idx);
 
 	switch (it.type) {
 	case Item::ItemPanel: {

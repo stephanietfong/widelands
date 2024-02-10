@@ -374,7 +374,7 @@ void KeyboardOptions::init_fastplace_default_shortcuts() {
 	for (Widelands::DescriptionIndex t = 0; t < game_->descriptions().nr_tribes(); ++t) {
 		const Widelands::TribeDescr* tribe = game_->descriptions().get_tribe_descr(t);
 		for (const auto& pair : tribe->fastplace_defaults()) {
-			fp[kFastplaceGroupPrefix + pair.first][tribe->name()] = pair.second;
+			fp[kFastplaceGroupPrefix + pair.first].at(tribe->name())] = pair.second;
 		}
 	}
 	::init_fastplace_default_shortcuts(fp);

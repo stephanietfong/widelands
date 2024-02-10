@@ -115,7 +115,7 @@ void ItemWaresDisplay::draw(RenderTarget& dst) {
 	dst.fill_rect(Recti(kMargin + 1, kMargin, 1, height - 2), black);
 
 	for (uint32_t idx = 0; idx < items_.size(); ++idx) {
-		const Item& it = items_[idx];
+		const Item& it = items_.at(idx);
 		uint32_t row = idx / items_per_row_;
 		uint32_t col = idx % items_per_row_;
 

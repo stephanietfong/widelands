@@ -119,6 +119,6 @@ void IconGrid::clicked_button(uint32_t idx) const {
 void* IconGrid::get_data(int32_t idx) {
 	assert(static_cast<uint32_t>(idx) < items_.size());
 
-	return items_[idx].data;
+	return items_.at(idx).data;
 }
 }  // namespace UI

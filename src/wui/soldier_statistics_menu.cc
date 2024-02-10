@@ -125,10 +125,10 @@ void SoldierStatisticsPanel::update() {
 			for (unsigned a = 0; a <= max_attack_; ++a) {
 				for (unsigned e = 0; e <= max_evade_; ++e) {
 					const uint32_t nr = counting_function_(h, a, d, e);
-					labels_all_[index]->set_text(nr != 0u ? get_amount_string(nr, true) : "");
-					labels_all_[index]->set_tooltip(std::to_string(nr));
+					labels_all_.at(index)->set_text(nr != 0u ? get_amount_string(nr, true) : "");
+					labels_all_.at(index)->set_tooltip(std::to_string(nr));
 					for (uint8_t i = 0; i < 4; ++i) {
-						icons_all_[index * 4 + i]->set_grey_out(nr == 0);
+						icons_all_.at(index * 4 + i)->set_grey_out(nr == 0);
 					}
 					++index;
 				}

@@ -91,7 +91,7 @@ void GameDetails::display(const std::vector<SavegameData>& gamedata) {
 	if (gamedata.size() > 1) {
 		show(gamedata);
 	} else {
-		show(gamedata[0]);
+		show(gamedata.at(0));
 	}
 }
 

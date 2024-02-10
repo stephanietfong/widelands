@@ -327,7 +327,7 @@ void LaunchGame::update_custom_starting_positions() {
 		for (const PlayerSettings& p : settings.players) {
 			if (p.state != PlayerSettings::State::kClosed && p.state != PlayerSettings::State::kOpen &&
 			    settings.get_tribeinfo(p.tribe)
-			       .initializations[p.initialization_index]
+			       .initializations.at(p.initialization_index)
 			       .uses_map_starting_position) {
 				allowed = true;
 				break;

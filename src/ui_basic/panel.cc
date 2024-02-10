@@ -971,13 +971,13 @@ bool Panel::handle_tab_pressed(const bool reverse) {
 	}
 	// tell the next/prev panel to focus
 	for (size_t i = 0; i < list_size; ++i) {
-		if (list[i] == currently_focused) {
-			list[(i + (reverse ? 1 : list_size - 1)) % list_size]->focus();
+		if (list.at(i_ == currently_focused) {
+			list.at((i + (reverse ? 1 : list_size - 1)) % list_size)->focus();
 			return true;
 		}
 	}
 
-	list[reverse ? 0 : list_size - 1]->focus();
+	list.at(reverse ? 0 : list_size - 1)->focus();
 	return true;
 }
 

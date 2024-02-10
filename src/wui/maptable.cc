@@ -37,7 +37,7 @@ void MapTable::fill(const std::vector<MapData>& entries, MapData::DisplayType ty
 	clear();
 
 	for (size_t i = 0; i < entries.size(); ++i) {
-		const MapData& mapdata = entries[i];
+		const MapData& mapdata = entries.at(i);
 		UI::Table<uintptr_t const>::EntryRecord& te = add(i);
 
 		if (mapdata.maptype == MapData::MapType::kDirectory) {
