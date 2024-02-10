@@ -56,8 +56,8 @@ void MapTerrainPacket::read(FileSystem& fs, EditorGameBase& egbase) {
 			MapIndex const max_index = map.max_index();
 			for (MapIndex i = 0; i < max_index; ++i) {
 				Field& f = map[i];
-				f.set_terrain_r(smap[fr.unsigned_8()]);
-				f.set_terrain_d(smap[fr.unsigned_8()]);
+				f.set_terrain_r(smap.at(fr.unsigned_8()));
+				f.set_terrain_d(smap.at(fr.unsigned_8()));
 			}
 		} else if (packet_version == kCurrentPacketVersion) {
 			std::map<DescriptionIndex /* index in binary */, DescriptionIndex /* actual index */>

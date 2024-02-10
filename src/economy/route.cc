@@ -51,7 +51,7 @@ void Route::init(int32_t totalcost) {
  */
 Flag& Route::get_flag(EditorGameBase& egbase, std::vector<Flag*>::size_type const idx) const {
 	assert(idx < route_.size());
-	return *route_[idx].get(egbase);
+	return *route_.at(idx).get(egbase);
 }
 
 /**

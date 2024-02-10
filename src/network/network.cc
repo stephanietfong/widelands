@@ -202,8 +202,8 @@ uint8_t* SendPacket::get_data() const {
 	assert(length < 0x10000);
 
 	// update packet length
-	buffer[0] = length >> 8;
-	buffer[1] = length & 0xFF;
+	buffer.at(0) = length >> 8;
+	buffer.at(1) = length & 0xFF;
 
 	return buffer.data();
 }
@@ -215,7 +215,7 @@ size_t RecvPacket::data(void* const packet_data, size_t const bufsize) {
 	}
 
 	for (size_t read = 0; read < bufsize; ++read) {
-		static_cast<uint8_t*>(packet_data)[read] = buffer[index_++];
+		static_cast<uint8_t*>(packet_data)[read] = buffer.at(index_++);
 	}
 
 	return bufsize;

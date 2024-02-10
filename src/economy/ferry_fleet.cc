@@ -573,13 +573,13 @@ void FerryFleet::Loader::load(FileRead& fr, uint8_t packet_version) {
 	const uint32_t nrferries = fr.unsigned_32();
 	ferries_.resize(nrferries);
 	for (uint32_t i = 0; i < nrferries; ++i) {
-		ferries_[i] = fr.unsigned_32();
+		ferries_.at(i) = fr.unsigned_32();
 	}
 
 	const uint32_t nrinterfaces = packet_version >= 2 ? fr.unsigned_32() : 0;
 	interfaces_.resize(nrinterfaces);
 	for (uint32_t i = 0; i < nrinterfaces; ++i) {
-		interfaces_[i] = fr.unsigned_32();
+		interfaces_.at(i) = fr.unsigned_32();
 	}
 
 	const uint32_t nrww = fr.unsigned_32();

@@ -30,7 +30,7 @@ Widelands::TribeBasicInfo GameSettings::get_tribeinfo(const std::string& tribena
 }
 
 Widelands::PlayerNumber GameSettings::find_shared(const PlayerSlot slot) const {
-	Widelands::PlayerNumber result = players[slot].shared_in;
+	Widelands::PlayerNumber result = players.at(slot).shared_in;
 	if (result > 0 && result <= players.size() &&
 	    PlayerSettings::can_be_shared(players.at(result - 1).state)) {
 		return result;

@@ -698,7 +698,7 @@ void EditorInteractive::draw(RenderTarget& dst) {
 	const auto& map = ebase.map();
 	std::map<Widelands::Coords, int> starting_positions;
 	for (int i = 1; i <= map.get_nrplayers(); ++i) {
-		starting_positions[map.get_starting_pos(i)] = i;
+		starting_positions.at(map.get_starting_pos(i)]) = i;
 	}
 
 	// Figure out which fields are currently under the selection.

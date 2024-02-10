@@ -142,7 +142,7 @@ void MapPlayersViewPacket::read(FileSystem& fs, EditorGameBase& egbase) {
 					split(field_vector, parseme, {'|'});
 					assert(field_vector.size() == additionally_seen);
 					for (size_t i = 0; i < additionally_seen; ++i) {
-						Player::Field& f = player->fields_[stoi(field_vector[i])];
+						Player::Field& f = player->fields_[stoi(field_vector.at(i))];
 						assert(f.vision == VisibleState::kUnexplored);
 						seen_fields.insert(&f);
 					}
@@ -161,7 +161,7 @@ void MapPlayersViewPacket::read(FileSystem& fs, EditorGameBase& egbase) {
 
 				size_t counter = 0;
 				for (const auto& field : seen_fields) {
-					field->owner = stoi(field_vector[counter]);
+					field->owner = stoi(field_vector.at(counter));
 					++counter;
 				}
 				assert(counter == no_of_seen_fields);
@@ -173,7 +173,7 @@ void MapPlayersViewPacket::read(FileSystem& fs, EditorGameBase& egbase) {
 
 				counter = 0;
 				for (const auto& field : seen_fields) {
-					field->time_node_last_unseen = Time(stoll(field_vector[counter]));
+					field->time_node_last_unseen = Time(stoll(field_vector.at(counter)));
 					++counter;
 				}
 				assert(counter == no_of_seen_fields);
@@ -194,8 +194,8 @@ void MapPlayersViewPacket::read(FileSystem& fs, EditorGameBase& egbase) {
 					split(data_vector, field_vector[counter], {'*'});
 					assert(data_vector.size() == 2);
 
-					field->terrains.store({static_cast<DescriptionIndex>(stoi(data_vector[0])),
-					                       static_cast<DescriptionIndex>(stoi(data_vector[1]))});
+					field->terrains.store({static_cast<DescriptionIndex>(stoi(data_vector.at(0))),
+					                       static_cast<DescriptionIndex>(stoi(data_vector.at(1)))});
 					++counter;
 				}
 				assert(counter == no_of_seen_fields);
@@ -210,9 +210,9 @@ void MapPlayersViewPacket::read(FileSystem& fs, EditorGameBase& egbase) {
 					split(data_vector, field_vector[counter], {'*'});
 					assert(data_vector.size() == 3);
 
-					field->r_e = static_cast<Widelands::RoadSegment>(stoi(data_vector[0]));
-					field->r_se = static_cast<Widelands::RoadSegment>(stoi(data_vector[1]));
-					field->r_sw = static_cast<Widelands::RoadSegment>(stoi(data_vector[2]));
+					field->r_e = static_cast<Widelands::RoadSegment>(stoi(data_vector.at(0)));
+					field->r_se = static_cast<Widelands::RoadSegment>(stoi(data_vector.at(1)));
+					field->r_sw = static_cast<Widelands::RoadSegment>(stoi(data_vector.at(2)));
 					++counter;
 				}
 				assert(counter == no_of_seen_fields);
@@ -227,10 +227,10 @@ void MapPlayersViewPacket::read(FileSystem& fs, EditorGameBase& egbase) {
 					split(data_vector, field_vector[counter], {'*'});
 					assert(data_vector.size() == 4);
 
-					field->border = from_unsigned(stoi(data_vector[0]));
-					field->border_r = from_unsigned(stoi(data_vector[1]));
-					field->border_br = from_unsigned(stoi(data_vector[2]));
-					field->border_bl = from_unsigned(stoi(data_vector[3]));
+					field->border = from_unsigned(stoi(data_vector.at(0)));
+					field->border_r = from_unsigned(stoi(data_vector.at(1)));
+					field->border_br = from_unsigned(stoi(data_vector.at(2)));
+					field->border_bl = from_unsigned(stoi(data_vector.at(3)));
 					++counter;
 				}
 				assert(counter == no_of_seen_fields);

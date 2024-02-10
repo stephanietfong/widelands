@@ -227,7 +227,7 @@ void RenderQueue::draw(const int screen_width, const int screen_height) {
 void RenderQueue::draw_items(const std::vector<Item>& items) {
 	size_t i = 0;
 	while (i < items.size()) {
-		const Item& item = items[i];
+		const Item& item = items.at(i);
 		switch (item.program_id) {
 		case Program::kBlit:
 			BlitProgram::instance().draw(batch_up<BlitProgram::Arguments>(Program::kBlit, items, &i));

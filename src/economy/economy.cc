@@ -417,8 +417,8 @@ void Economy::add_warehouse(Warehouse& wh) {
  */
 void Economy::remove_warehouse(Warehouse& wh) {
 	for (size_t i = 0; i < warehouses_.size(); ++i) {
-		if (warehouses_[i] == &wh) {
-			warehouses_[i] = *warehouses_.rbegin();
+		if (warehouses_.at(i) == &wh) {
+			warehouses_.at(i) = *warehouses_.rbegin();
 			warehouses_.pop_back();
 			return;
 		}

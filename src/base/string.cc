@@ -107,7 +107,7 @@ void trim(std::string& str, const bool remove_leading, const bool remove_trailin
 
 	if (remove_trailing) {
 		size_t len = str.size();
-		while (len > 0 && str[len - 1] == ' ') {
+		while (len > 0 && str.at(len - 1) == ' ') {
 			str.pop_back();
 			--len;
 		}

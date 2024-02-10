@@ -34,7 +34,7 @@ bool MapObjectLoader::is_object_known(Serial const n) const {
  * mark this object as saved
  */
 void MapObjectLoader::mark_object_as_loaded(MapObject& obj) {
-	loaded_objects_[&obj] = true;
+	loaded_objects_.at(&obj) = true;
 }
 
 /*

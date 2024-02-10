@@ -323,10 +323,10 @@ void GameClient::do_run(RecvPacket& packet) {
 		}
 
 		for (size_t i = packet.unsigned_32(); i > 0; --i) {
-			custom_naming_lists[number].first.insert(packet.string());
+			custom_naming_lists.at(number).first.insert(packet.string());
 		}
 		for (size_t i = packet.unsigned_32(); i > 0; --i) {
-			custom_naming_lists[number].second.insert(packet.string());
+			custom_naming_lists.at(number).second.insert(packet.string());
 		}
 	}
 
@@ -784,7 +784,7 @@ void GameClient::handle_hello(RecvPacket& packet) {
 	std::vector<AddOns::AddOnState> new_g_addons;
 	std::map<std::string, std::shared_ptr<AddOns::AddOnInfo>> disabled_installed_addons;
 	for (const auto& pair : AddOns::g_addons) {
-		disabled_installed_addons[pair.first->internal_name] = pair.first;
+		disabled_installed_addons.at(pair.first->internal_name) = pair.first;
 	}
 	std::set<std::string> missing_addons;
 	std::map<std::string, std::pair<std::string /* installed */, std::string /* host */>>
@@ -804,7 +804,7 @@ void GameClient::handle_hello(RecvPacket& packet) {
 		if (found.empty()) {
 			missing_addons.insert(name);
 		} else if (found != v) {
-			wrong_version_addons[name] = std::make_pair(
+			wrong_version_addons.at(name) = std::make_pair(
 			   AddOns::version_to_string(found, false), AddOns::version_to_string(v, false));
 		}
 	}

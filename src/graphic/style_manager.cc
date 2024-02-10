@@ -72,7 +72,7 @@ void set_template_dir(std::string dir) {
 		g_style_manager = it->second.get();
 	} else {
 		g_style_manager = new StyleManager();
-		g_style_managers[g_template_dir] = std::unique_ptr<StyleManager>(g_style_manager);
+		g_style_managers.at(g_template_dir) = std::unique_ptr<StyleManager>(g_style_manager);
 		if (default_style == nullptr) {
 			assert(g_template_dir == kDefaultTemplate);
 			default_style = g_style_manager;

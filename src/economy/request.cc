@@ -510,7 +510,7 @@ void Request::cancel_transfer(uint32_t const idx) {
  * whether the Request is registered with the Economy.
  */
 void Request::remove_transfer(uint32_t const idx) {
-	Transfer* const t = transfers_[idx];
+	Transfer* const t = transfers_.at(idx);
 
 	transfers_.erase(transfers_.begin() + idx);
 

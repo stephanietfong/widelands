@@ -316,8 +316,8 @@ void DefaultAI::think() {
 	// and
 	// the limit (jobs_to_run_count) is not exceeded
 	for (uint8_t i = 0; i < jobs_to_run_count; ++i) {
-		if (taskPool[i]->due_time <= gametime) {
-			current_task_queue.push_back(taskPool[i]);
+		if (taskPool.at(i)->due_time <= gametime) {
+			current_task_queue.push_back(taskPool.at(i));
 			sort_task_pool();
 		} else {
 			break;
@@ -825,11 +825,11 @@ void DefaultAI::late_initialization() {
 
 				// populating mines_per_type map
 				if (mines_per_type.count(bo.mines) == 0) {
-					mines_per_type[bo.mines] = MineTypesObserver();
+					mines_per_type.at(bo.mines) = MineTypesObserver();
 				}
 				// Identify iron mines based on mines value
 				if (bo.mines == iron_resource_id) {
-					mines_per_type[bo.mines].is_critical = true;
+					mines_per_type.at(bo.mines).is_critical = true;
 					mine_fields_stat.add_critical_ore(bo.mines);
 				}
 			}
@@ -885,7 +885,7 @@ void DefaultAI::late_initialization() {
 				if (wares.at(ware).refined_build_material) {
 					bo.set_is(BuildingAttribute::kBuildingMatProducer);
 					if (bo.type == BuildingObserver::Type::kMine) {
-						mines_per_type[bo.mines].is_critical = true;
+						mines_per_type.at(bo.mines).is_critical = true;
 						mine_fields_stat.add_critical_ore(bo.mines);
 					}
 				}
@@ -907,7 +907,7 @@ void DefaultAI::late_initialization() {
 						verb_log_dbg_time(
 						   gametime, "AI %d detected quarry: %s", player_number(), bo.name);
 						bo.set_is(BuildingAttribute::kNeedsRocks);
-						buildings_immovable_attributes_[attribute.second].insert(
+						buildings_immovable_attributes_.at(attribute.second).insert(
 						   ImmovableAttribute(bo.name, BuildingAttribute::kNeedsRocks));
 						break;
 					}
@@ -917,7 +917,7 @@ void DefaultAI::late_initialization() {
 						verb_log_dbg_time(
 						   gametime, "AI %d detected lumberjack: %s", player_number(), bo.name);
 						bo.set_is(BuildingAttribute::kLumberjack);
-						buildings_immovable_attributes_[attribute.second].insert(
+						buildings_immovable_attributes_.at(attribute.second).insert(
 						   ImmovableAttribute(bo.name, BuildingAttribute::kLumberjack));
 						break;
 					}
@@ -925,7 +925,7 @@ void DefaultAI::late_initialization() {
 						verb_log_dbg_time(
 						   gametime, "AI %d detected berry collector: %s", player_number(), bo.name);
 						bo.set_is(BuildingAttribute::kNeedsBerry);
-						buildings_immovable_attributes_[attribute.second].insert(
+						buildings_immovable_attributes_.at(attribute.second).insert(
 						   ImmovableAttribute(bo.name, BuildingAttribute::kNeedsBerry));
 					}
 				}
@@ -1042,9 +1042,9 @@ void DefaultAI::late_initialization() {
 					                  bo.name, lumberjack->name().c_str());
 					bo.set_is(BuildingAttribute::kRanger);
 					rangers_.push_back(bo);
-					wood_policy_[bo.id] = WoodPolicy::kAllowRangers;
+					wood_policy_.at(bo.id_ = WoodPolicy::kAllowRangers;
 					for (const auto& attribute : prodsite->created_attributes()) {
-						buildings_immovable_attributes_[attribute.second].insert(
+						buildings_immovable_attributes_.at(attribute.second).insert(
 						   ImmovableAttribute(bo.name, BuildingAttribute::kRanger));
 					}
 				}
@@ -1646,7 +1646,7 @@ void DefaultAI::update_buildable_field(BuildableField& field) {
 		if (field.unowned_mines_spots_nearby > 0 &&
 		    // for performance considerations we count iron nodes only if we have less than 2 iron
 		    // mines now...
-		    mines_per_type[iron_resource_id].total_count() <= 1) {
+		    mines_per_type.at(iron_resource_id).total_count() <= 1) {
 			// counting iron mines, if we have less than two iron mines
 			field.unowned_iron_mines_nearby = map.find_fields(
 			   game(), Widelands::Area<Widelands::FCoords>(field.coords, kDistantResourcesArea),
@@ -1802,8 +1802,8 @@ void DefaultAI::update_buildable_field(BuildableField& field) {
 					amount += 2;
 				}
 
-				field.immovables_by_attribute_nearby[attribute_info.building_attribute] = amount;
-				field.immovables_by_name_nearby[attribute_info.building_name] = amount;
+				field.immovables_by_attribute_nearby.at(attribute_info.building_attribute) = amount;
+				field.immovables_by_name_nearby.at(attribute_info.building_name) = amount;
 			}
 		}
 
@@ -2059,8 +2059,8 @@ void DefaultAI::update_buildable_field(BuildableField& field) {
 		score_parts[25] =
 		   (field.unowned_land_nearby != 0) ?
             management_data.neuron_pool[27].get_result_safe(
-		         std::max(field.immovables_by_attribute_nearby[BuildingAttribute::kLumberjack],
-		                  field.immovables_by_attribute_nearby[BuildingAttribute::kRanger]) /
+		         std::max(field.immovables_by_attribute_nearby.at(BuildingAttribute::kLumberjack),
+		                  field.immovables_by_attribute_nearby.at(BuildingAttribute::kRanger)) /
 		            2,
 		         kAbsValue) :
             0;
@@ -2609,13 +2609,13 @@ bool DefaultAI::construct_building(const Time& gametime) {
 						prio += 5 * std::abs(management_data.get_military_number_at(17));
 					}
 
-					if (bf->immovables_by_name_nearby[bo.name] < trees_nearby_treshold_ &&
+					if (bf->immovables_by_name_nearby.at(bo.name) < trees_nearby_treshold_ &&
 					    bo.new_building == BuildingNecessity::kAllowed) {
 						continue;
 					}
 
 					prio += std::abs(management_data.get_military_number_at(26)) *
-					        (bf->immovables_by_name_nearby[bo.name] - trees_nearby_treshold_) / 10;
+					        (bf->immovables_by_name_nearby.at(bo.name) - trees_nearby_treshold_) / 10;
 
 					// consider cutters and rangers nearby
 					prio += 2 * number_of_supporters_nearby *
@@ -2628,7 +2628,7 @@ bool DefaultAI::construct_building(const Time& gametime) {
 					// Quarries are generally to be built everywhere where rocks are
 					// no matter the need for granite, as rocks are considered an obstacle
 					// to expansion
-					const uint8_t rocks_nearby = bf->immovables_by_name_nearby[bo.name];
+					const uint8_t rocks_nearby = bf->immovables_by_name_nearby.at(bo.name);
 					if (rocks_nearby < 1) {
 						continue;
 					}
@@ -2719,7 +2719,7 @@ bool DefaultAI::construct_building(const Time& gametime) {
 						        2;
 
 						prio += management_data.neuron_pool[49].get_result_safe(
-						           bf->immovables_by_name_nearby[bo.name], kAbsValue) /
+						           bf->immovables_by_name_nearby.at(bo.name), kAbsValue) /
 						        5;
 
 						prio += number_of_supported_producers_nearby * 5 -
@@ -2728,7 +2728,7 @@ bool DefaultAI::construct_building(const Time& gametime) {
 						           15 -
 						        bf->space_consumers_nearby *
 						           std::abs(management_data.get_military_number_at(101)) / 5 -
-						        bf->immovables_by_attribute_nearby[BuildingAttribute::kNeedsRocks] / 3;
+						        bf->immovables_by_attribute_nearby.at(BuildingAttribute::kNeedsRocks) / 3;
 
 						prio += number_of_same_nearby * 3;
 						// don't block port building spots with trees
@@ -2739,8 +2739,8 @@ bool DefaultAI::construct_building(const Time& gametime) {
 					} else if (bo.is(BuildingAttribute::kSupportingProducer)) {
 						// we don't like trees nearby
 						prio += 1 - std::max(
-						               bf->immovables_by_attribute_nearby[BuildingAttribute::kLumberjack],
-						               bf->immovables_by_attribute_nearby[BuildingAttribute::kRanger]) /
+						               bf->immovables_by_attribute_nearby.at(BuildingAttribute::kLumberjack),
+						               bf->immovables_by_attribute_nearby.at(BuildingAttribute::kRanger)) /
 						               3;
 						// and be far from rangers
 						prio += 1 - bf->rangers_nearby *
@@ -2779,8 +2779,8 @@ bool DefaultAI::construct_building(const Time& gametime) {
 					} else if (bo.is(BuildingAttribute::kSpaceConsumer)) {
 						// we don't like trees nearby
 						prio += 1 - std::max(
-						               bf->immovables_by_attribute_nearby[BuildingAttribute::kLumberjack],
-						               bf->immovables_by_attribute_nearby[BuildingAttribute::kRanger]) /
+						               bf->immovables_by_attribute_nearby.at(BuildingAttribute::kLumberjack),
+						               bf->immovables_by_attribute_nearby.at(BuildingAttribute::kRanger)) /
 						               4;
 						// and be far from rangers
 						prio += 1 - bf->rangers_nearby *
@@ -2869,8 +2869,8 @@ bool DefaultAI::construct_building(const Time& gametime) {
 							// we dont like trees nearby
 							prio +=
 							   1 -
-							   std::max(bf->immovables_by_attribute_nearby[BuildingAttribute::kLumberjack],
-							            bf->immovables_by_attribute_nearby[BuildingAttribute::kRanger]) /
+							   std::max(bf->immovables_by_attribute_nearby.at(BuildingAttribute::kLumberjack),
+							            bf->immovables_by_attribute_nearby.at(BuildingAttribute::kRanger)) /
 							      4;
 							// we attempt to cluster space consumers together
 							prio += number_of_same_nearby * 2;
@@ -2898,7 +2898,7 @@ bool DefaultAI::construct_building(const Time& gametime) {
 						}
 						if (bo.is(BuildingAttribute::kNeedsBerry)) {
 							prio += std::abs(management_data.get_military_number_at(13)) *
-							        bf->immovables_by_name_nearby[bo.name] / 12;
+							        bf->immovables_by_name_nearby.at(bo.name) / 12;
 							prio += management_data.neuron_pool[39].get_result_safe(
 							           number_of_supporters_nearby * 5, kAbsValue) /
 							        2;
@@ -3578,8 +3578,8 @@ bool DefaultAI::dismantle_dead_ends() {
 	const uint16_t stepping = roads.size() / 25 + 1;
 
 	for (uint16_t i = 0; i < roads.size(); i += stepping) {
-		const Widelands::Flag& roadstartflag = roads[i]->get_flag(Widelands::RoadBase::FlagStart);
-		const Widelands::Flag& roadendflag = roads[i]->get_flag(Widelands::RoadBase::FlagEnd);
+		const Widelands::Flag& roadstartflag = roads.at(i)->get_flag(Widelands::RoadBase::FlagStart);
+		const Widelands::Flag& roadendflag = roads.at(i)->get_flag(Widelands::RoadBase::FlagEnd);
 
 		if ((roadstartflag.get_building() == nullptr) && roadstartflag.is_dead_end()) {
 			game().send_player_bulldoze(*const_cast<Widelands::Flag*>(&roadstartflag));
@@ -3791,7 +3791,7 @@ bool DefaultAI::dispensable_road_test(const Widelands::Road& road) {
 	} else {
 		// We count wares only on inner flags
 		for (uint16_t k = 1; k < full_road.size() - 1; ++k) {
-			wares_on_road += full_road[k]->current_wares();
+			wares_on_road += full_road.at(k)->current_wares();
 		}
 	}
 
@@ -4052,7 +4052,7 @@ bool DefaultAI::create_shortcut_road(const Widelands::Flag& flag,
 	// now we walk over roads and if field is reachable by roads, we change the distance assigned
 	// above
 	std::map<uint32_t, NearFlag> nearflags;  // only used to collect flags reachable walk over roads
-	nearflags[flag.get_position().hash()] = NearFlag(&flag, 0);
+	nearflags.at(flag.get_position().hash()) = NearFlag(&flag, 0);
 
 	collect_nearflags(nearflags, flag, checkradius);
 
@@ -4202,12 +4202,12 @@ void DefaultAI::collect_nearflags(std::map<uint32_t, NearFlag>& nearflags,
 			break;
 		}
 
-		nearflags[start_field].to_be_checked = false;
+		nearflags.at(start_field).to_be_checked = false;
 
 		// Now going over roads leading from this flag
 		for (uint8_t i = Widelands::WalkingDir::FIRST_DIRECTION;
 		     i <= Widelands::WalkingDir::LAST_DIRECTION; ++i) {
-			Widelands::Road* const road = nearflags[start_field].flag->get_road(i);
+			Widelands::Road* const road = nearflags.at(start_field).flag->get_road(i);
 
 			if (road == nullptr) {
 				continue;
@@ -4215,7 +4215,7 @@ void DefaultAI::collect_nearflags(std::map<uint32_t, NearFlag>& nearflags,
 
 			Widelands::Flag* endflag = &road->get_flag(Widelands::Road::FlagStart);
 
-			if (endflag == nearflags[start_field].flag) {
+			if (endflag == nearflags.at(start_field).flag) {
 				endflag = &road->get_flag(Widelands::Road::FlagEnd);
 			}
 
@@ -4231,18 +4231,18 @@ void DefaultAI::collect_nearflags(std::map<uint32_t, NearFlag>& nearflags,
 			if (nearflags.count(endflag_hash) == 0) {
 				// This is brand new flag
 				// calculating diff how much closer we will get to the flag
-				nearflags[endflag_hash] =
-				   NearFlag(endflag, nearflags[start_field].current_road_distance +
+				nearflags.at(endflag_hash) =
+				   NearFlag(endflag, nearflags.at(start_field).current_road_distance +
 				                        road->get_path().get_nsteps());
 			} else {
 				// We know about this flag already
-				if (nearflags[endflag_hash].current_road_distance >
-				    nearflags[start_field].current_road_distance + road->get_path().get_nsteps()) {
+				if (nearflags.at(endflag_hash).current_road_distance >
+				    nearflags.at(start_field).current_road_distance + road->get_path().get_nsteps()) {
 					// ..but this current connection is shorter than one found before
-					nearflags[endflag_hash].current_road_distance =
-					   nearflags[start_field].current_road_distance + road->get_path().get_nsteps();
+					nearflags.at(endflag_hash).current_road_distance =
+					   nearflags.at(start_field).current_road_distance + road->get_path().get_nsteps();
 					// So let re-check neighbours once more
-					nearflags[endflag_hash].to_be_checked = true;
+					nearflags.at(endflag_hash).to_be_checked = true;
 				}
 			}
 		}
@@ -4928,14 +4928,14 @@ bool DefaultAI::check_mines_(const Time& gametime) {
 	bool single_critical = false;
 	if ((site.bo->is(BuildingAttribute::kBuildingMatProducer) ||
 	     site.bo->mines == iron_resource_id) &&
-	    mines_per_type[site.bo->mines].finished == 1) {
+	    mines_per_type.at(site.bo->mines).finished == 1) {
 		single_critical = true;
 	}
 
 	// first get rid of mines that have been  missing workers for some time (10 minutes),
 	// released worker (if any) can be useful elsewhere !
 	if (!single_critical && site.built_time + Duration(10 * 60 * 1000) < gametime &&
-	    !site.site->can_start_working() && mines_per_type[site.bo->mines].total_count() > 2) {
+	    !site.site->can_start_working() && mines_per_type.at(site.bo->mines).total_count() > 2) {
 		initiate_dismantling(site, gametime);
 		return false;
 	}
@@ -4948,7 +4948,7 @@ bool DefaultAI::check_mines_(const Time& gametime) {
 	// After 15 minutes in existence we check whether a miner is needed for a critical unoccupied
 	// mine elsewhere
 	if (site.built_time + Duration(15 * 60 * 1000) < gametime) {
-		if (!mines_per_type[site.bo->mines].is_critical && critical_mine_unoccupied(gametime)) {
+		if (!mines_per_type.at(site.bo->mines).is_critical && critical_mine_unoccupied(gametime)) {
 			for (uint8_t i = 0; i < site.site->descr().nr_working_positions(); i++) {
 				const Widelands::Worker* cw = site.site->working_positions()->at(i).worker.get(game());
 				if (cw != nullptr) {
@@ -4967,7 +4967,7 @@ bool DefaultAI::check_mines_(const Time& gametime) {
 	}
 
 	// Out of resources, first check whether a mine is not needed for critical mine
-	if (!mines_per_type[site.bo->mines].is_critical && critical_mine_unoccupied(gametime)) {
+	if (!mines_per_type.at(site.bo->mines).is_critical && critical_mine_unoccupied(gametime)) {
 		initiate_dismantling(site, gametime);
 		return true;
 	}
@@ -4987,7 +4987,7 @@ bool DefaultAI::check_mines_(const Time& gametime) {
 	bool forcing_upgrade = false;
 	const uint16_t minimal_mines_count =
 	   (site.bo->is(BuildingAttribute::kBuildingMatProducer)) ? 2 : 1;
-	if (has_upgrade && mines_per_type[site.bo->mines].total_count() <= minimal_mines_count) {
+	if (has_upgrade && mines_per_type.at(site.bo->mines).total_count() <= minimal_mines_count) {
 		forcing_upgrade = true;
 	}
 
@@ -5016,7 +5016,7 @@ bool DefaultAI::check_mines_(const Time& gametime) {
 	}
 
 	// don't upgrade now if other mines of the same type are right now in construction
-	if (mines_per_type[site.bo->mines].in_construction > 0) {
+	if (mines_per_type.at(site.bo->mines).in_construction > 0) {
 		return false;
 	}
 
@@ -5035,9 +5035,9 @@ bool DefaultAI::check_mines_(const Time& gametime) {
 			if (site.site->has_workers(enhancement, game())) {  // enhancing
 				game().send_player_enhance_building(*site.site, enhancement, true);
 				if (site.bo->max_needed_preciousness == 0) {
-					assert(mines_per_type[site.bo->mines].total_count() <= minimal_mines_count);
+					assert(mines_per_type.at(site.bo->mines_.total_count() <= minimal_mines_count);
 				}
-				if (mines_per_type[site.bo->mines].total_count() > minimal_mines_count) {
+				if (mines_per_type.at(site.bo->mines).total_count() > minimal_mines_count) {
 					assert(site.bo->max_needed_preciousness > 0);
 				}
 				en_bo.construction_decision_time = gametime;

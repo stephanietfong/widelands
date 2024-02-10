@@ -519,9 +519,9 @@ void GameHost::run_callback() {
 			playernumber = client.playernum + 1;
 			if (playernumber > 0 && playernumber <= UserSettings::highest_playernum()) {
 				// Merge instead of overwrite - multiple clients can share a player
-				custom_naming_lists[playernumber].first.insert(
+				custom_naming_lists.at(playernumber).first.insert(
 				   client.custom_ship_names.begin(), client.custom_ship_names.end());
-				custom_naming_lists[playernumber].second.insert(
+				custom_naming_lists.at(playernumber).second.insert(
 				   client.custom_warehouse_names.begin(), client.custom_warehouse_names.end());
 			}
 		}
